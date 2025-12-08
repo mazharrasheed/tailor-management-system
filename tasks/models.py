@@ -39,7 +39,7 @@ class SoftDeleteModel(models.Model):
 
 
 class Task(SoftDeleteModel):
-    Customer=models.ForeignKey('Customer', on_delete=models.RESTRICT, related_name='tasks', null=True, blank=True)
+    customer=models.ForeignKey('Customer', on_delete=models.RESTRICT, related_name='tasks', null=True, blank=True)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     completed = models.BooleanField(default=False)

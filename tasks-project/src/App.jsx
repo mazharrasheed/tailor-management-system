@@ -21,12 +21,12 @@ function App() {
         {/* Navigation */}
         <Navbar></Navbar>
         <div  className="container d-flex justify-content-center align-items-center" >
-          <h1>Welcome to  Authentication & Tasks</h1>
+          <h1>Welcome to Anmol Taliors</h1>
         </div>
 
         {/* Routes */}
         <Routes>
-          <Route path="/signin" element={<SignIn />} />
+          <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/allusers" element={<Users />} />
           <Route path="/tasks" element={<Task />} />
