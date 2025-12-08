@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-
 class CustomPermissions(models.Model):
     class Meta:
         permissions = [
@@ -36,8 +35,6 @@ class SoftDeleteModel(models.Model):
     def hard_delete(self):
         super().delete()
 
-
-
 class Task(SoftDeleteModel):
     customer=models.ForeignKey('Customer', on_delete=models.RESTRICT, related_name='tasks', null=True, blank=True)
     title = models.CharField(max_length=100)
@@ -50,7 +47,7 @@ class Task(SoftDeleteModel):
     def __str__(self):
         return self.title
     
-    
+
 class Customer(SoftDeleteModel):     
 
     name = models.CharField(max_length=100)
