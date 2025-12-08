@@ -1,5 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link ,Navigate} from 'react-router-dom';
+import {  useContext,} from 'react';
 import Users from './components/Users';
+import CreateUser from './components/CreateUser';
 import SignIn from './components/Signin';
 import Logout from './components/Logout';
 import Navbar from './components/Navbar';
@@ -12,26 +14,29 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import { AuthProvider } from './context/AuthContext';
 import './App.css'
-
+import { AuthContext } from './context/AuthContext';
 
 function App() {
+
+   const { token } = useContext(AuthContext);
+
   return (
     <Router>
       <AuthProvider>
         {/* Navigation */}
         <Navbar></Navbar>
         <div  className="container d-flex justify-content-center align-items-center" >
-          <h1>Welcome to Anmol Taliors</h1>
+          <h1 className='mt-3'>Welcome to Anmol Tailors</h1>
         </div>
 
         {/* Routes */}
         <Routes>
-          <Route path="/" element={<SignIn />} />
+          <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/allusers" element={<Users />} />
-          <Route path="/tasks" element={<Task />} />
-          <Route path="/customers" element={<CustomerManager />} />
-          <Route path="/profile" element={<Profile />} />
+           <Route path="/allusers" element={token ? <CreateUser /> : <Navigate to="/login" />} />
+          <Route path="/tasks" element={token ?<Task />: <Navigate to="/login" />}/>
+          <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/login" /> } />
+          <Route path="/profile" element={token ? <Profile /> :<Navigate to="/login" />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>
       </AuthProvider>

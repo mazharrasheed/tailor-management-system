@@ -4,9 +4,11 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { FaEdit, FaTrash, FaPlus, FaTimes } from "react-icons/fa";
+
 import StatusModal from "./StatusModal";
 import ConfirmModal from "./ConfirmModal";
 import ReusableTable from "./ReusableTable";
+import CustomerDetailsModal from "./CustomerDetailsModal";
 
 const CustomerManager = () => {
     const { token } = useContext(AuthContext);
@@ -24,12 +26,15 @@ const CustomerManager = () => {
 
     const [userPerms, setUserPerms] = useState({});
 
+    // NEW → Details modal states
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+
     const initialForm = {
         name: "",
         Phome_number: "",
         Adress: "",
         description: "",
-
         coller: "",
         tera: "",
         sleve_length: "",
@@ -42,8 +47,6 @@ const CustomerManager = () => {
         shirt_length: "",
         shalwar_length: "",
         shalwar_hole: "",
-
-        // booleans (grouped at end of form UI)
         front_pocket_right: false,
         front_pocket_left: true,
         side_pocket_right: true,
@@ -69,13 +72,13 @@ const CustomerManager = () => {
             console.error("Failed to fetch customers:", err);
         }
     };
+
     const fetchCustomer = async (id) => {
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/customers/${id}`, {
+            const res = await axios.get(`http://127.0.0.1:8000/api/customers/${id}/`, {
                 headers: { Authorization: `Token ${token}` },
             });
-            setCustomer(res.data);
-            console.log(res.data)
+            return res.data;
         } catch (err) {
             console.error("Failed to fetch customers:", err);
         }
@@ -87,7 +90,6 @@ const CustomerManager = () => {
                 headers: { Authorization: `Token ${token}` },
             });
             setUserPerms(res.data);
-            // console.log(res.data);
         } catch (err) {
             console.error("Failed to fetch permissions:", err);
         }
@@ -99,16 +101,16 @@ const CustomerManager = () => {
         setShowForm(false);
     };
 
-    const handleDetails = (customer) => {
-        // Ensure only known fields are set (in case API returns extra props)
-        const safe = { ...initialForm, ...customer };
-        const id=customer.id
-        const fetched_customer=fetchCustomer(id)
-        
-
+    // -------------------------------------------------------
+    // DETAILS BUTTON → Opens modal with full customer details
+    // -------------------------------------------------------
+    const handleDetails = async (customer) => {
+        const data = await fetchCustomer(customer.id);
+        setSelectedCustomer(data);
+        setShowDetailsModal(true);
     };
+
     const handleEdit = (customer) => {
-        // Ensure only known fields are set (in case API returns extra props)
         const safe = { ...initialForm, ...customer };
         setFormData(safe);
         setEditingId(customer.id);
@@ -199,17 +201,26 @@ const CustomerManager = () => {
 
     return (
         <div className="container mt-4">
-            {/* Modals */}
+
+            {/* Confirm Delete Modal */}
             <ConfirmModal
                 show={showConfirmModal}
                 onClose={() => setShowConfirmModal(false)}
                 onConfirm={confirmDelete}
                 message={modalMessage}
             />
+
             <StatusModal
                 message={modalMessage}
                 status={modalStatus}
                 onClose={() => setModalMessage("")}
+            />
+
+            {/* DETAILS MODAL */}
+            <CustomerDetailsModal
+                show={showDetailsModal}
+                onClose={() => setShowDetailsModal(false)}
+                customer={selectedCustomer}
             />
 
             <h2>Customer Manager</h2>
@@ -220,258 +231,194 @@ const CustomerManager = () => {
                 </button>
             )}
 
+            {/* FORM (unchanged logic) */}
             {showForm && (
                 <form onSubmit={handleSubmit} className="card p-4 mb-4">
-                    <div className="row mb-3" >
-                        {/* Top: name + description */}
+                    <h4  className="mb-4" >Customer Details</h4>
+                    <div className="row mb-3">
                         <div className="col-md-3">
-                            <label className="form-label">Name</label>
-                            <input
-                                className="form-control"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                required
-                            />
+                            <label>Name</label>
+                            <input className="form-control" value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
                         </div>
 
                         <div className="col-md-3">
-                            <label className="form-label">Phone</label>
-                            <input
-                                className="form-control"
-                                value={formData.Phome_number}
-                                onChange={(e) => setFormData({ ...formData, Phome_number: e.target.value })}
-                            />
+                            <label>Phone</label>
+                            <input className="form-control" value={formData.Phome_number}
+                                onChange={(e) => setFormData({ ...formData, Phome_number: e.target.value })} />
                         </div>
 
                         <div className="col-md-3">
-                            <label className="form-label">Address</label>
-                            <input
-                                className="form-control"
-                                value={formData.Adress}
-                                onChange={(e) => setFormData({ ...formData, Adress: e.target.value })}
-                            />
+                            <label>Address</label>
+                            <input className="form-control" value={formData.Adress}
+                                onChange={(e) => setFormData({ ...formData, Adress: e.target.value })} />
                         </div>
 
-
-
-
                         <div className="col-md-3">
-                            <label className="form-label">Description</label>
-                            <textarea
-                                className="form-control"
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            />
+                            <label>Description</label>
+                            <textarea className="form-control" value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
                         </div>
                     </div>
 
-                    {/* Grid: 4 inputs per row */}
+                    {/* Measurements */}
                     <div className="row mb-3">
-
-
+                        <h4  className="mb-4" >Qameez Sizes</h4>
                         <div className="col-md-3">
-                            <label className="form-label">Collar</label>
-                            <input
-                                className="form-control"
-                                value={formData.coller}
-                                onChange={(e) => setFormData({ ...formData, coller: e.target.value })}
-                            />
+                            <label>Collar</label>
+                            <input className="form-control" value={formData.coller}
+                                onChange={(e) => setFormData({ ...formData, coller: e.target.value })} />
                         </div>
+
                         <div className="col-md-3">
-                            <label className="form-label">Tera</label>
-                            <input
-                                className="form-control"
-                                value={formData.tera}
-                                onChange={(e) => setFormData({ ...formData, tera: e.target.value })}
-                            />
+                            <label>Tera</label>
+                            <input className="form-control" value={formData.tera}
+                                onChange={(e) => setFormData({ ...formData, tera: e.target.value })} />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-3">
-                            <label className="form-label">Sleeve length</label>
-                            <input
-                                className="form-control"
-                                value={formData.sleve_length}
-                                onChange={(e) => setFormData({ ...formData, sleve_length: e.target.value })}
-                            />
+                            <label>Sleeve length</label>
+                            <input className="form-control" value={formData.sleve_length}
+                                onChange={(e) => setFormData({ ...formData, sleve_length: e.target.value })} />
                         </div>
+
                         <div className="col-md-3">
-                            <label className="form-label">Sleeve hole</label>
-                            <input
-                                className="form-control"
-                                value={formData.sleve_hole}
-                                onChange={(e) => setFormData({ ...formData, sleve_hole: e.target.value })}
-                            />
+                            <label>Sleeve hole</label>
+                            <input className="form-control" value={formData.sleve_hole}
+                                onChange={(e) => setFormData({ ...formData, sleve_hole: e.target.value })} />
                         </div>
+
                         <div className="col-md-3">
-                            <label className="form-label">Cuff hole</label>
-                            <input
-                                className="form-control"
-                                value={formData.cuff_hole}
-                                onChange={(e) => setFormData({ ...formData, cuff_hole: e.target.value })}
-                            />
+                            <label>Cuff hole</label>
+                            <input className="form-control" value={formData.cuff_hole}
+                                onChange={(e) => setFormData({ ...formData, cuff_hole: e.target.value })} />
                         </div>
+
                         <div className="col-md-3">
-                            <label className="form-label">Cuff width</label>
-                            <input
-                                className="form-control"
-                                value={formData.cuff_width}
-                                onChange={(e) => setFormData({ ...formData, cuff_width: e.target.value })}
-                            />
+                            <label>Cuff width</label>
+                            <input className="form-control" value={formData.cuff_width}
+                                onChange={(e) => setFormData({ ...formData, cuff_width: e.target.value })} />
                         </div>
                     </div>
 
                     <div className="row mb-3">
                         <div className="col-md-3">
-                            <label className="form-label">Chest</label>
-                            <input
-                                className="form-control"
-                                value={formData.chest}
-                                onChange={(e) => setFormData({ ...formData, chest: e.target.value })}
-                            />
+                            <label>Chest</label>
+                            <input className="form-control" value={formData.chest}
+                                onChange={(e) => setFormData({ ...formData, chest: e.target.value })} />
                         </div>
+
                         <div className="col-md-3">
-                            <label className="form-label">Belly</label>
-                            <input
-                                className="form-control"
-                                value={formData.belly}
-                                onChange={(e) => setFormData({ ...formData, belly: e.target.value })}
-                            />
+                            <label>Belly</label>
+                            <input className="form-control" value={formData.belly}
+                                onChange={(e) => setFormData({ ...formData, belly: e.target.value })} />
                         </div>
+
                         <div className="col-md-3">
-                            <label className="form-label">Shirt kera</label>
-                            <input
-                                className="form-control"
-                                value={formData.shirt_kera}
-                                onChange={(e) => setFormData({ ...formData, shirt_kera: e.target.value })}
-                            />
+                            <label>Shirt kera</label>
+                            <input className="form-control" value={formData.shirt_kera}
+                                onChange={(e) => setFormData({ ...formData, shirt_kera: e.target.value })} />
                         </div>
+
                         <div className="col-md-3">
-                            <label className="form-label">Shirt length</label>
-                            <input
-                                className="form-control"
-                                value={formData.shirt_length}
-                                onChange={(e) => setFormData({ ...formData, shirt_length: e.target.value })}
-                            />
+                            <label>Shirt length</label>
+                            <input className="form-control" value={formData.shirt_length}
+                                onChange={(e) => setFormData({ ...formData, shirt_length: e.target.value })} />
                         </div>
                     </div>
 
                     <div className="row mb-4">
+                         <h4 className="mb-4" >Shalwar Sizes</h4>
                         <div className="col-md-3">
-                            <label className="form-label">Shalwar length</label>
-                            <input
-                                className="form-control"
-                                value={formData.shalwar_length}
-                                onChange={(e) => setFormData({ ...formData, shalwar_length: e.target.value })}
-                            />
+                            <label>Shalwar length</label>
+                            <input className="form-control" value={formData.shalwar_length}
+                                onChange={(e) => setFormData({ ...formData, shalwar_length: e.target.value })} />
                         </div>
+
                         <div className="col-md-3">
-                            <label className="form-label">Shalwar hole</label>
-                            <input
-                                className="form-control"
-                                value={formData.shalwar_hole}
-                                onChange={(e) => setFormData({ ...formData, shalwar_hole: e.target.value })}
-                            />
+                            <label>Shalwar hole</label>
+                            <input className="form-control" value={formData.shalwar_hole}
+                                onChange={(e) => setFormData({ ...formData, shalwar_hole: e.target.value })} />
                         </div>
                     </div>
 
-                    {/* Checkbox group at end */}
-                    <div className="border rounded p-3 mb-3">
+                    {/* CHECKBOX SECTION */}
+                  
                         <div className="row">
-                            
+                             <h4  className="mb-4" >Pocket Details</h4>
                             <div className="col-md-3">
-                                <div className="form-check">
-                                    <input
-                                        id="front_pocket_left"
-                                        className="form-check-input"
-                                        type="checkbox"
+                                <label>
+                                    <input type="checkbox"
                                         checked={formData.front_pocket_left}
-                                        onChange={(e) => setFormData({ ...formData, front_pocket_left: e.target.checked })}
-                                    />
-                                    <label htmlFor="front_pocket_left" className="form-check-label">
-                                        Front pocket left
-                                    </label>
-                                </div>
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, front_pocket_left: e.target.checked })
+                                        }
+                                    /> Front pocket left
+                                </label>
                             </div>
+
                             <div className="col-md-3">
-                                <div className="form-check">
-                                    <input
-                                        id="front_pocket_right"
-                                        className="form-check-input"
-                                        type="checkbox"
+                                <label>
+                                    <input type="checkbox"
                                         checked={formData.front_pocket_right}
-                                        onChange={(e) => setFormData({ ...formData, front_pocket_right: e.target.checked })}
-                                    />
-                                    <label htmlFor="front_pocket_right" className="form-check-label">
-                                        Front pocket right
-                                    </label>
-                                </div>
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, front_pocket_right: e.target.checked })
+                                        }
+                                    /> Front pocket right
+                                </label>
                             </div>
+
                             <div className="col-md-3">
-                                <div className="form-check">
-                                    <input
-                                        id="side_pocket_right"
-                                        className="form-check-input"
-                                        type="checkbox"
+                                <label>
+                                    <input type="checkbox"
                                         checked={formData.side_pocket_right}
-                                        onChange={(e) => setFormData({ ...formData, side_pocket_right: e.target.checked })}
-                                    />
-                                    <label htmlFor="side_pocket_right" className="form-check-label">
-                                        Side pocket right
-                                    </label>
-                                </div>
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, side_pocket_right: e.target.checked })
+                                        }
+                                    /> Side pocket right
+                                </label>
                             </div>
+
                             <div className="col-md-3">
-                                <div className="form-check">
-                                    <input
-                                        id="side_pocket_left"
-                                        className="form-check-input"
-                                        type="checkbox"
+                                <label>
+                                    <input type="checkbox"
                                         checked={formData.side_pocket_left}
-                                        onChange={(e) => setFormData({ ...formData, side_pocket_left: e.target.checked })}
-                                    />
-                                    <label htmlFor="side_pocket_left" className="form-check-label">
-                                        Side pocket left
-                                    </label>
-                                </div>
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, side_pocket_left: e.target.checked })
+                                        }
+                                    /> Side pocket left
+                                </label>
                             </div>
                         </div>
 
                         <div className="row mt-2">
                             <div className="col-md-3">
-                                <div className="form-check">
-                                    <input
-                                        id="shirt_kera_round"
-                                        className="form-check-input"
-                                        type="checkbox"
+                                <label>
+                                    <input type="checkbox"
                                         checked={formData.shirt_kera_round}
-                                        onChange={(e) => setFormData({ ...formData, shirt_kera_round: e.target.checked })}
-                                    />
-                                    <label htmlFor="shirt_kera_round" className="form-check-label">
-                                        Shirt kera round
-                                    </label>
-                                </div>
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, shirt_kera_round: e.target.checked })
+                                        }
+                                    /> Shirt kera round
+                                </label>
                             </div>
+
                             <div className="col-md-3">
-                                <div className="form-check">
-                                    <input
-                                        id="shalwar_pocket"
-                                        className="form-check-input"
-                                        type="checkbox"
+                                <label>
+                                    <input type="checkbox"
                                         checked={formData.shalwar_pocket}
-                                        onChange={(e) => setFormData({ ...formData, shalwar_pocket: e.target.checked })}
-                                    />
-                                    <label htmlFor="shalwar_pocket" className="form-check-label">
-                                        Shalwar pocket
-                                    </label>
-                                </div>
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, shalwar_pocket: e.target.checked })
+                                        }
+                                    /> Shalwar pocket
+                                </label>
                             </div>
                         </div>
-                    </div>
+                   
 
-                    {/* Actions */}
-                    <div className="d-flex gap-2">
+                    <div className="d-flex gap-2 mt-5">
                         <button type="submit" className="btn btn-primary">
                             <FaPlus /> {editingId ? "Update" : "Create"}
                         </button>

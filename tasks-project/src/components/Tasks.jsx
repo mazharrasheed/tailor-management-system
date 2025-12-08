@@ -16,6 +16,8 @@ const TaskManager = () => {
   const [users, setUsers] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [formData, setFormData] = useState({
+    due_date: '',
+    customer: '',
     title: '',
     description: '',
     assigned_to: '',
@@ -35,15 +37,18 @@ const TaskManager = () => {
   }, []);
 
   const fetchCustomers = async () => {
-        try {
-            const res = await axios.get("http://127.0.0.1:8000/api/customers/", {
-                headers: { Authorization: `Token ${token}` },
-            });
-            setCustomers(res.data);
-        } catch (err) {
-            console.error("Failed to fetch customers:", err);
-        }
-    };
+    try {
+      const res = await axios.get("http://127.0.0.1:8000/api/customers/", {
+        headers: { Authorization: `Token ${token}` },
+      });
+      setCustomers(res.data);
+      console.log("Customers fetched:", res.data, customers);
+
+
+    } catch (err) {
+      console.error("Failed to fetch customers:", err);
+    }
+  };
 
   const fetchTasks = async () => {
     try {
@@ -83,13 +88,15 @@ const TaskManager = () => {
   };
 
   const resetForm = () => {
-    setFormData({ title: '', description: '', assigned_to: '', completed: false });
+    setFormData({ due_date: '', customer: '', title: '', description: '', assigned_to: '', completed: false });
     setEditingTaskId(null);
     setShowForm(false);
   };
 
   const handleEdit = (task) => {
     setFormData({
+      due_date: task.due_date ? task.due_date.split("T")[0] : "",
+      customer: task.customer,
       title: task.title,
       description: task.description,
       assigned_to: task.assigned_to,
@@ -155,11 +162,15 @@ const TaskManager = () => {
   const columns = [
     { header: "ID", accessor: "id", sortable: true, center: true },
     { header: "Title", accessor: "title", sortable: true },
+    { header: "Due Date", accessor: "due_date", sortable: true },
+    {
+      header: "Customer",
+      accessor: (row) => customerMap[row.customer] || "Unknown",
+      sortable: true
+    },
     { header: "Description", accessor: "description", sortable: true },
     {
-      header: "Assigned To",
-      accessor: "assigned_to",
-      sortable: true,
+      header: "Assigned To", accessor: "assigned_to", sortable: true,
       render: (value, row, index, extra) => extra.userMap?.[value] || "Unknown",
     },
     { header: "Status", accessor: row => row.completed ? <> <FaCheck className="text-success me-2" /> Completed  </> : <><FaExclamationTriangle className="text-warning me-2" /> Pending </>, sortable: true, center: true },
@@ -186,6 +197,12 @@ const TaskManager = () => {
     users.forEach(user => (map[user.id] = user.username));
     return map;
   }, [users]);
+
+  const customerMap = useMemo(() => {
+    const map = {};
+    customers.forEach(c => (map[c.id] = c.name));
+    return map;
+  }, [customers]);
 
 
   return (
@@ -214,64 +231,99 @@ const TaskManager = () => {
       )}
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="card p-4 mb-4">
-          <div className="mb-2">
-            <label>Title</label>
-            <input
-              className="form-control"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              required
-            />
-          </div>
-          <div className="mb-2">
-            <label>Description</label>
-            <textarea
-              className="form-control"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            />
-          </div>
-          <div className="mb-2">
-            <label>Assign To</label>
-            <select
-              className="form-select"
-              value={formData.assigned_to}
-              onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
-              required
-            >
-              <option value="">-- Select User --</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.username}
-                </option>
-              ))}
-            </select>
-          </div>
-          {editingTaskId !== null && (
-            <div className="form-check mb-2">
+
+        <div className="row">
+
+          <form onSubmit={handleSubmit} className="card p-4 mb-4 col-md-6 offset-md-3">
+            <div className="mb-2">
+              <label>Due Date</label>
               <input
-                className="form-check-input"
-                type="checkbox"
-                checked={formData.completed}
-                onChange={(e) => setFormData({ ...formData, completed: e.target.checked })}
+                className="form-control"
+                type='date'
+                value={formData.due_date}
+                onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+                required
               />
-              <label className="form-check-label">Completed</label>
             </div>
-          )}
-          <div className="d-flex gap-2">
-            <button type="submit" className="btn btn-primary">
-              <FaPlus /> {editingTaskId ? 'Update' : 'Create'}
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={resetForm}>
-              <FaTimes /> Cancel
-            </button>
-          </div>
-        </form>
+
+            <div className="mb-2">
+              <label>Customer</label>
+              <select
+                className="form-select"
+                value={formData.customer}
+                onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+                required
+              >
+                <option value="">Select Customer</option>
+                {customers.map((customer) => (
+                  <option key={customer.id} value={customer.id}>
+                    {customer.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+
+            <div className="mb-2">
+              <label>Title</label>
+              <input
+                className="form-control"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-2">
+              <label>Description</label>
+              <textarea
+                className="form-control"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              />
+            </div>
+            <div className="mb-2">
+              <label>Assign To</label>
+              <select
+                className="form-select"
+                value={formData.assigned_to}
+                onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
+                required
+              >
+                <option value=""> Select User </option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.username}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {editingTaskId !== null && (
+              <div className="form-check mb-2">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={formData.completed}
+                  onChange={(e) => setFormData({ ...formData, completed: e.target.checked })}
+                />
+                <label className="form-check-label">Completed</label>
+              </div>
+            )}
+            <div className="d-flex gap-2">
+              <button type="submit" className="btn btn-primary">
+                <FaPlus /> {editingTaskId ? 'Update' : 'Create'}
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={resetForm}>
+                <FaTimes /> Cancel
+              </button>
+
+            </div>
+          </form>
+        </div>
       )}
 
-   
+
       <ReusableTable columns={columns} data={tasks} extra={{ userMap }}></ReusableTable>
+
     </div>
   );
 };
