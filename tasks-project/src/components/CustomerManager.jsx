@@ -64,7 +64,7 @@ const CustomerManager = () => {
 
     const fetchCustomers = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/customers/", {
+            const res = await axios.get("https://anmoltailor.pythonanywhere.com/api/customers/", {
                 headers: { Authorization: `Token ${token}` },
             });
             setCustomers(res.data);
@@ -75,7 +75,7 @@ const CustomerManager = () => {
 
     const fetchCustomer = async (id) => {
         try {
-            const res = await axios.get(`http://127.0.0.1:8000/api/customers/${id}/`, {
+            const res = await axios.get(`https://anmoltailor.pythonanywhere.com/api/customers/${id}/`, {
                 headers: { Authorization: `Token ${token}` },
             });
             return res.data;
@@ -86,7 +86,7 @@ const CustomerManager = () => {
 
     const fetchPermissions = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/users/me/permissions/", {
+            const res = await axios.get("https://anmoltailor.pythonanywhere.com/api/users/me/permissions/", {
                 headers: { Authorization: `Token ${token}` },
             });
             setUserPerms(res.data);
