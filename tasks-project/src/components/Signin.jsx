@@ -25,7 +25,7 @@ const SignIn = () => {
         localStorage.setItem('access_token', authToken);
         login(authToken);  // after successful login
         console.log('Login successful! Token:', authToken);
-        navigate('/profile');
+        navigate('/customers');
 
     } catch (err) {
         if (err.response) {
