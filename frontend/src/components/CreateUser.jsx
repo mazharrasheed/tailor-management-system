@@ -21,7 +21,7 @@ export default function UserManagement() {
   useEffect(() => {
     axios
       .get(
-        "http://127.0.0.1:8000/api/users/me/permissions/",
+        "https://anmoltailor.pythonanywhere.com/api/users/me/permissions/",
         {
           headers: { Authorization: `Token ${token}` }
         }
@@ -39,7 +39,7 @@ export default function UserManagement() {
   const fetchUsers = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/users/", {
+      .get("https://anmoltailor.pythonanywhere.com/api/users/", {
         headers: { Authorization: `Token ${token}` }
       })
       .then((res) => setUsers(res.data))
@@ -72,14 +72,14 @@ export default function UserManagement() {
     try {
       if (form.id) {
         await axios.put(
-          `http://127.0.0.1:8000/api/users/${form.id}/`,
+          `https://anmoltailor.pythonanywhere.com/api/users/${form.id}/`,
           form,
           { headers: { Authorization: `Token ${token}` } }
         );
         alert("User updated successfully");
       } else {
         await axios.post(
-          "http://127.0.0.1:8000/api/users/",
+          "https://anmoltailor.pythonanywhere.com/api/users/",
           form,
           { headers: { Authorization: `Token ${token}` } }
         );
@@ -120,7 +120,7 @@ export default function UserManagement() {
 
     try {
       await axios.delete(
-        `http://127.0.0.1:8000/api/users/${id}/`,
+        `https://anmoltailor.pythonanywhere.com/api/users/${id}/`,
         { headers: { Authorization: `Token ${token}` } }
       );
       fetchUsers();
