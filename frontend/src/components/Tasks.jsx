@@ -34,7 +34,7 @@ const TaskManager = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/tasks/', {
+      const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/tasks/', {
         headers: { Authorization: `Token ${token}` },
       });
       setTasks(response.data);
@@ -50,7 +50,7 @@ const TaskManager = () => {
   const [userPerms, setUserPerms] = useState({});
 
   const fetchPermissions = async () => {
-    const response = await axios.get('http://127.0.0.1:8000/api/users/me/permissions/', {
+    const response = await axios.get('https://anmoltailor.pythonanywhere.com/me/permissions/', {
       headers: { Authorization: `Token ${token}` },
     });
     setUserPerms(response.data);
@@ -60,7 +60,7 @@ const TaskManager = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/users/', {
+      const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/users/', {
         headers: { Authorization: `Token ${token}` },
       });
       setUsers(response.data);
@@ -90,11 +90,11 @@ const TaskManager = () => {
     e.preventDefault();
     try {
       if (editingTaskId) {
-        await axios.put(`http://127.0.0.1:8000/api/tasks/${editingTaskId}/`, formData, {
+        await axios.put(`https://anmoltailor.pythonanywhere.com/api/tasks/${editingTaskId}/`, formData, {
           headers: { Authorization: `Token ${token}` },
         });
       } else {
-        await axios.post('http://127.0.0.1:8000/api/tasks/', formData, {
+        await axios.post('https://anmoltailor.pythonanywhere.com/api/tasks/', formData, {
           headers: { Authorization: `Token ${token}` },
         });
       }
@@ -108,7 +108,7 @@ const TaskManager = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await axios.delete(`http://127.0.0.1:8000/api/tasks/${taskToDelete}/`, {
+      const response = await axios.delete(`https://anmoltailor.pythonanywhere.com/api/tasks/${taskToDelete}/`, {
         headers: { Authorization: `Token ${token}` },
       });
       if (response.status === 204) {

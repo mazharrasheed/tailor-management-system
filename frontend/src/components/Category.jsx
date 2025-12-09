@@ -21,7 +21,7 @@ export default function Category() {
 
     try {
 
-      const response = await axios.get('http://127.0.0.1:8000/api/categories/', {
+      const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/categories/', {
         headers: { Authorization: `token ${token}` }
       });
 

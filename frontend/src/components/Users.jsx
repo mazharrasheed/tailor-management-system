@@ -8,7 +8,7 @@ const User = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/allusers/', {
+                const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/allusers/', {
                     // Uncomment and update the line below if authentication is required
                     headers: { Authorization: `Token ${localStorage.getItem('access_token')}` }
                 });

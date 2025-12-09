@@ -15,7 +15,7 @@ const SignIn = () => {
         e.preventDefault();
         setError('');
          try {
-        const response = await axios.post('http://authsandtasks.pythonanywhere.com/api-token-auth/', {
+        const response = await axios.post('http://anmoltailor.pythonanywhere.com/api-token-auth/', {
             username,
             password,
         });

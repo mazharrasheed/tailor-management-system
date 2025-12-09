@@ -8,7 +8,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/profile/', {
+                const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/profile/', {
                     // Uncomment and update the line below if authentication is required
                     headers: { Authorization: `Token ${localStorage.getItem('access_token')}` }
                 });
