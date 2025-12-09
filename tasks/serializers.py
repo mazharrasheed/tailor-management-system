@@ -47,31 +47,56 @@ class UserSignupSerializer(serializers.ModelSerializer):
 #         model = User
 #         fields = ['id', 'username']
 
+# class UserSerializer(serializers.ModelSerializer):
+#     permissions = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = User
+#         fields = ['id', 'username', 'email', 'permissions']  # include permissions
+
+#     def get_permissions(self, obj):
+#         # Return all permissions the user has
+#         user_perms = obj.get_all_permissions()
+
+#         # Convert "app.codename" to object list
+#         perms_list = []
+#         for perm in user_perms:
+#             app_label, codename = perm.split('.')
+#             try:
+#                 perm_obj = Permission.objects.get(codename=codename)
+#                 perms_list.append({
+#                     "codename": perm_obj.codename,
+#                     "name": perm_obj.name,
+#                     "app_label": app_label
+#                 })
+#             except Permission.DoesNotExist:
+#                 pass
+
+#         return perms_list
+    
 class UserSerializer(serializers.ModelSerializer):
+    # writable field
+    permission_codenames = serializers.SlugRelatedField(
+        many=True,
+        slug_field="codename",
+        queryset=Permission.objects.all(),
+        source="user_permissions"
+    )
+    # read-only pretty output
     permissions = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'permissions']  # include permissions
+        fields = ['id', 'username', 'email', 'permissions', 'permission_codenames']
 
     def get_permissions(self, obj):
-        # Return all permissions the user has
-        user_perms = obj.get_all_permissions()
-
-        # Convert "app.codename" to object list
         perms_list = []
-        for perm in user_perms:
-            app_label, codename = perm.split('.')
-            try:
-                perm_obj = Permission.objects.get(codename=codename)
-                perms_list.append({
-                    "codename": perm_obj.codename,
-                    "name": perm_obj.name,
-                    "app_label": app_label
-                })
-            except Permission.DoesNotExist:
-                pass
-
+        for perm in obj.user_permissions.all():
+            perms_list.append({
+                "codename": perm.codename,
+                "name": perm.name,
+                "app_label": perm.content_type.app_label
+            })
         return perms_list
 
 class TaskSerializer(serializers.ModelSerializer):
