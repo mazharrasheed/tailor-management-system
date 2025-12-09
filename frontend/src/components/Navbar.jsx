@@ -38,11 +38,11 @@ export default function Navbar() {
                       Customers
                     </NavLink>
                   </li>
-                  {/* <li className="nav-item">
+                  <li className="nav-item">
                     <NavLink className={getNavLinkClass} to="/profile">
                       Profile
                     </NavLink>
-                  </li> */}
+                  </li>
                 </>
               )}
 
