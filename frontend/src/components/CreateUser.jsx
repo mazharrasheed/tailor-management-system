@@ -94,15 +94,15 @@ export default function UserManagement() {
   };
 
   // Load User for Editing
-  const handleEdit = (user) => {
-    setIsEditing(true);
-    setForm({
-      id: user.id,
-      username: user.username,
-      password: "",
-      permissions: user.permissions || []
-    });
-  };
+const handleEdit = (user) => {
+  setIsEditing(true);
+  setForm({
+    id: user.id,
+    username: user.username,
+    password: "",
+    permissions: user.permissions?.map(p => p.codename) || []
+  });
+};
 
   const resetForm = () => {
     setIsEditing(false);
@@ -217,7 +217,7 @@ export default function UserManagement() {
                     {user.permissions?.length > 0 ? (
                       user.permissions.map((p, i) => (
                         <span key={i} className="badge bg-secondary me-1">
-                          {p}
+                          {p.name}
                         </span>
                       ))
                     ) : (
