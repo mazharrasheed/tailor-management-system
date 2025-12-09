@@ -65,41 +65,76 @@ export default function UserManagement() {
     }));
   };
 
-  // Save User
+  // // Save User
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     if (form.id) {
+  //       const payload = {
+  //         username: form.username,
+  //         password: form.password || undefined,
+  //         permissions: form.permissions.map(codename => {
+  //           const permObj = permissions.find(p => p.codename === codename);
+  //           return permObj ? permObj : { codename };
+  //         })
+  //       };
+  //       await axios.put(
+  //         `https://anmoltailor.pythonanywhere.com/api/users/${form.id}/`,
+  //         payload,
+  //         { headers: { Authorization: `Token ${token}` } }
+  //       );
+
+  //     } else {
+  //       await axios.post(
+  //         "https://anmoltailor.pythonanywhere.com/api/users/",
+  //         form,
+  //         { headers: { Authorization: `Token ${token}` } }
+  //       );
+  //       alert("User created successfully");
+  //     }
+
+  //     resetForm();
+  //     fetchUsers();
+  //   } catch (err) {
+  //     alert("Failed to save user");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      if (form.id) {
-        const payload = {
-          username: form.username,
-          password: form.password || undefined,
-          permissions: form.permissions.map(codename => {
-            const permObj = permissions.find(p => p.codename === codename);
-            return permObj ? permObj : { codename };
-          })
-        };
-        await axios.put(
-          `https://anmoltailor.pythonanywhere.com/api/users/${form.id}/`,
-          payload,
-          { headers: { Authorization: `Token ${token}` } }
-        );
+  try {
+    if (form.id) {
+      const payload = {
+        username: form.username,
+        ...(form.password ? { password: form.password } : {}),
+        permissions: form.permissions // array of codenames
+      };
 
-      } else {
-        await axios.post(
-          "https://anmoltailor.pythonanywhere.com/api/users/",
-          form,
-          { headers: { Authorization: `Token ${token}` } }
-        );
-        alert("User created successfully");
-      }
-
-      resetForm();
-      fetchUsers();
-    } catch (err) {
-      alert("Failed to save user");
+      await axios.put(
+        `https://anmoltailor.pythonanywhere.com/api/users/${form.id}/`,
+        payload,
+        { headers: { Authorization: `Token ${token}` } }
+      );
+      alert("User updated successfully");
+    } else {
+      await axios.post(
+        "https://anmoltailor.pythonanywhere.com/api/users/",
+        form,
+        { headers: { Authorization: `Token ${token}` } }
+      );
+      alert("User created successfully");
     }
-  };
+
+    resetForm();
+    fetchUsers();
+  } catch (err) {
+    console.error("Save error:", err.response?.data || err.message);
+    alert("Failed to save user");
+  }
+};
+
 
   // Load User for Editing
   const handleEdit = (user) => {

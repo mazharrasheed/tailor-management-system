@@ -26,7 +26,7 @@ function App() {
         {/* Navigation */}
         <Navbar></Navbar>
         <div  className="container d-flex justify-content-center align-items-center mt-3" >
-          <h1>Welcome to  Anmol Tailors</h1>
+          <h1>Welcome to Tailor Management System</h1>
         </div>
 
         {/* Routes */}
