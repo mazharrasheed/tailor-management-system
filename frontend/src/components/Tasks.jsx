@@ -71,8 +71,14 @@ const TaskManager = () => {
     const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/users/me/permissions/', {
       headers: { Authorization: `Token ${token}` },
     });
-    setUserPerms(response.data);
-    console.log(response.data)
+
+    const perms = response.data.permissions.map(p => p.codename);
+    console.log(perms);
+    setUserPerms(perms);
+    console.log(response.data.permissions)
+    console.log("TYPE:", typeof response.data.permissions);
+    console.log("IS ARRAY:", Array.isArray(response.data.permissions));
+    console.log("VALUE:", response.data.permissions);
   };
 
 
@@ -224,17 +230,16 @@ const TaskManager = () => {
       />
 
       <h2>Task Manager</h2>
-      {/* {userPerms.permissions?.tasks?.includes('add_task') && (
-        <button className="btn btn-success mb-3 mt-5" onClick={() => setShowForm(true)}>
-          <FaPlus /> Create Task
-        </button>
-      )} */}
-      {userPerms.permissions?.codename ==='add_task' && (
+      {Array.isArray(userPerms) && userPerms.includes("add_task") && (
         <button className="btn btn-success mb-3 mt-5" onClick={() => setShowForm(true)}>
           <FaPlus /> Create Task
         </button>
       )}
-
+      {/* {userPerms.some(p => p.codename === "add_task") && (
+        <button className="btn btn-success mb-3 mt-5" onClick={() => setShowForm(true)}>
+          <FaPlus /> Create Task
+        </button>
+      )} */}
       {showForm && (
 
         <div className="row">

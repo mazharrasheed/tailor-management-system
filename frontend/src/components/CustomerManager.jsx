@@ -59,8 +59,17 @@ const CustomerManager = () => {
 
     useEffect(() => {
         fetchCustomers();
-        // fetchPermissions();
+        fetchPermissions();
     }, []);
+
+  const fetchPermissions = async () => {
+    const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/users/me/permissions/', {
+      headers: { Authorization: `Token ${token}` },
+    });
+    const perms = response.data.permissions.map(p => p.codename);
+    setUserPerms(perms);
+
+  };
 
     const fetchCustomers = async () => {
         try {
@@ -220,6 +229,12 @@ const CustomerManager = () => {
                 </button>
             )}
 
+               {Array.isArray(userPerms) && userPerms.includes("add_customer") && (
+                    <button className="btn btn-success mb-3 mt-3" onClick={() => setShowForm(true)}>
+                      <FaPlus /> Create Customer
+                    </button>
+                  )}
+
             {/* FORM (unchanged logic) */}
             {showForm && (
                 <form onSubmit={handleSubmit} className="card p-4 mb-4">
@@ -339,7 +354,7 @@ const CustomerManager = () => {
                              <h4  className="mb-4" >Pocket Details</h4>
                             <div className="col-md-3">
                                 <label>
-                                    <input type="checkbox"
+                                    <input type="checkbox" className="me-3" 
                                         checked={formData.front_pocket_left}
                                         onChange={(e) =>
                                             setFormData({ ...formData, front_pocket_left: e.target.checked })
@@ -350,7 +365,7 @@ const CustomerManager = () => {
 
                             <div className="col-md-3">
                                 <label>
-                                    <input type="checkbox"
+                                    <input type="checkbox" className="me-3"
                                         checked={formData.front_pocket_right}
                                         onChange={(e) =>
                                             setFormData({ ...formData, front_pocket_right: e.target.checked })
@@ -361,7 +376,7 @@ const CustomerManager = () => {
 
                             <div className="col-md-3">
                                 <label>
-                                    <input type="checkbox"
+                                    <input type="checkbox" className="me-3"
                                         checked={formData.side_pocket_right}
                                         onChange={(e) =>
                                             setFormData({ ...formData, side_pocket_right: e.target.checked })
@@ -372,7 +387,7 @@ const CustomerManager = () => {
 
                             <div className="col-md-3">
                                 <label>
-                                    <input type="checkbox"
+                                    <input type="checkbox" className="me-3"
                                         checked={formData.side_pocket_left}
                                         onChange={(e) =>
                                             setFormData({ ...formData, side_pocket_left: e.target.checked })
@@ -385,7 +400,7 @@ const CustomerManager = () => {
                         <div className="row mt-2">
                             <div className="col-md-3">
                                 <label>
-                                    <input type="checkbox"
+                                    <input type="checkbox" className="me-3"
                                         checked={formData.shirt_kera_round}
                                         onChange={(e) =>
                                             setFormData({ ...formData, shirt_kera_round: e.target.checked })
@@ -396,7 +411,7 @@ const CustomerManager = () => {
 
                             <div className="col-md-3">
                                 <label>
-                                    <input type="checkbox"
+                                    <input type="checkbox" className="me-3"
                                         checked={formData.shalwar_pocket}
                                         onChange={(e) =>
                                             setFormData({ ...formData, shalwar_pocket: e.target.checked })

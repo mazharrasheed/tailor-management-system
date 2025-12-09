@@ -31,8 +31,10 @@ export const AuthProvider = ({ children }) => {
     const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/users/me/permissions/', {
       headers: { Authorization: `Token ${token}` },
     });
-    setUserPerms(response.data);
-    console.log(response.data)
+    setUserPerms(response.data.permissions);
+    console.log(response.data.permissions)
+    const perms=response.data.permissions
+    perms.some(p => p.codename === "add_task")
   };
 
 console.log("AuthContext userPerms:", userPerms);
