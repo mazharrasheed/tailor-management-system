@@ -76,6 +76,7 @@ const ReusableTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20], extra 
   return (
     <>
       {/* Search & Rows per page */}
+
       <div className="d-flex justify-content-between align-items-center mb-3">
         <input
           type="text"
@@ -107,63 +108,64 @@ const ReusableTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20], extra 
       </div>
 
       {/* Table */}
-      <table className="table table-striped table-bordered table-hover">
-        <thead className="table-light">
-          <tr>
-            {columns.map((col) => (
-              <th className="text-center"
-                key={col.header}
-                onClick={() => col.sortable && handleSort(col.accessor)}
-                style={{ cursor: col.sortable ? "pointer" : "default" }}
-              >
-                {col.header}
-                {col.sortable && sortConfig.key === col.accessor && (
-                  <span className="ms-2">
-                    {sortConfig.direction === "asc" ? "↑" : "↓"}
-                  </span>
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {currentRows.length > 0 ? (
-            currentRows.map((row, i) => (
-              <tr key={i}>
-                {columns.map((col, j) => (
-                  <td
-                    key={j}
-                    className={col.center ? "text-center" : ""}
-                  >
-                    {col.render
-                      ? col.render(
-                        typeof col.accessor === "function"
-                          ? col.accessor(row)
-                          : row[col.accessor],
-                        row,
-                        i,
-                        extra
-                      )
-                      : highlightText(
-                        typeof col.accessor === "function"
-                          ? col.accessor(row)
-                          : row[col.accessor],
-                        searchTerm
-                      )}
-                  </td>
-                ))}
-              </tr>
-            ))
-          ) : (
+      <div className="table-responsive">
+        <table className="table table-striped table-bordered table-hover">
+          <thead className="table-light">
             <tr>
-              <td colSpan={columns.length} className="text-center">
-                No data found.
-              </td>
+              {columns.map((col) => (
+                <th className="text-center"
+                  key={col.header}
+                  onClick={() => col.sortable && handleSort(col.accessor)}
+                  style={{ cursor: col.sortable ? "pointer" : "default" }}
+                >
+                  {col.header}
+                  {col.sortable && sortConfig.key === col.accessor && (
+                    <span className="ms-2">
+                      {sortConfig.direction === "asc" ? "↑" : "↓"}
+                    </span>
+                  )}
+                </th>
+              ))}
             </tr>
-          )}
-        </tbody>
-
-      </table>
+          </thead>
+          <tbody>
+            {currentRows.length > 0 ? (
+              currentRows.map((row, i) => (
+                <tr key={i}>
+                  {columns.map((col, j) => (
+                    <td
+                      key={j}
+                      className={col.center ? "text-center" : ""}
+                    >
+                      {col.render
+                        ? col.render(
+                          typeof col.accessor === "function"
+                            ? col.accessor(row)
+                            : row[col.accessor],
+                          row,
+                          i,
+                          extra
+                        )
+                        : highlightText(
+                          typeof col.accessor === "function"
+                            ? col.accessor(row)
+                            : row[col.accessor],
+                          searchTerm
+                        )}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns.length} className="text-center">
+                  No data found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
