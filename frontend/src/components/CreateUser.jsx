@@ -71,12 +71,20 @@ export default function UserManagement() {
 
     try {
       if (form.id) {
+        const payload = {
+          username: form.username,
+          password: form.password || undefined,
+          permissions: form.permissions.map(codename => {
+            const permObj = permissions.find(p => p.codename === codename);
+            return permObj ? permObj : { codename };
+          })
+        };
         await axios.put(
           `https://anmoltailor.pythonanywhere.com/api/users/${form.id}/`,
-          form,
+          payload,
           { headers: { Authorization: `Token ${token}` } }
         );
-        alert("User updated successfully");
+
       } else {
         await axios.post(
           "https://anmoltailor.pythonanywhere.com/api/users/",
@@ -94,15 +102,15 @@ export default function UserManagement() {
   };
 
   // Load User for Editing
-const handleEdit = (user) => {
-  setIsEditing(true);
-  setForm({
-    id: user.id,
-    username: user.username,
-    password: "",
-    permissions: user.permissions?.map(p => p.codename) || []
-  });
-};
+  const handleEdit = (user) => {
+    setIsEditing(true);
+    setForm({
+      id: user.id,
+      username: user.username,
+      password: "",
+      permissions: user.permissions?.map(p => p.codename) || []
+    });
+  };
 
   const resetForm = () => {
     setIsEditing(false);
