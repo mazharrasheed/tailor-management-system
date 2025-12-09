@@ -48,11 +48,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
 #         fields = ['id', 'username']
 
 class UserSerializer(serializers.ModelSerializer):
-    
-    permissions = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Permission.objects.all()
-    )
+    permissions = serializers.SerializerMethodField()
 
     class Meta:
         model = User
