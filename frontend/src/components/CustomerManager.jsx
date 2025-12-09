@@ -84,17 +84,6 @@ const CustomerManager = () => {
         }
     };
 
-    const fetchPermissions = async () => {
-        try {
-            const res = await axios.get("https://anmoltailor.pythonanywhere.com/api/users/me/permissions/", {
-                headers: { Authorization: `Token ${token}` },
-            });
-            setUserPerms(res.data);
-        } catch (err) {
-            console.error("Failed to fetch permissions:", err);
-        }
-    };
-
     const resetForm = () => {
         setFormData(initialForm);
         setEditingId(null);

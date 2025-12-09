@@ -151,7 +151,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 STATICFILES_DIRS = [
-    BASE_DIR / "frontend" / "dist" / "static",
+    BASE_DIR / "frontend" / "dist" / "assets",
 ]
 
 TEMPLATES[0]["DIRS"] = [
