@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import {  useContext,} from 'react';
 import Users from './components/Users';
 import SignIn from './components/Signin';
 import Logout from './components/Logout';
@@ -12,9 +13,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import { AuthProvider } from './context/AuthContext';
 import './App.css'
+import { AuthContext } from './context/AuthContext';
+
 
 
 function App() {
+
+  const { token } = useContext(AuthContext);
   return (
     <Router>
       <AuthProvider>
