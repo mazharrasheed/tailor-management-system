@@ -11,7 +11,7 @@ const Logout = () => {
     localStorage.removeItem('access_token');
     logout()
     // Redirect to SignIn page
-    navigate('/signin');
+    navigate('/');
   }, [navigate]);
 
   return (
