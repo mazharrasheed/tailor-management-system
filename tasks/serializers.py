@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Task
 from django.contrib.auth.models import User
 import re
+from django.contrib.auth.models import Permission
 
 class UserSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -41,10 +42,37 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return user
 
 
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['id', 'username']
+
 class UserSerializer(serializers.ModelSerializer):
+    permissions = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username']
+        fields = ['id', 'username', 'email', 'permissions']  # include permissions
+
+    def get_permissions(self, obj):
+        # Return all permissions the user has
+        user_perms = obj.get_all_permissions()
+
+        # Convert "app.codename" to object list
+        perms_list = []
+        for perm in user_perms:
+            app_label, codename = perm.split('.')
+            try:
+                perm_obj = Permission.objects.get(codename=codename)
+                perms_list.append({
+                    "codename": perm_obj.codename,
+                    "name": perm_obj.name,
+                    "app_label": app_label
+                })
+            except Permission.DoesNotExist:
+                pass
+
+        return perms_list
 
 class TaskSerializer(serializers.ModelSerializer):
     assigned_to_username = serializers.CharField(source='assigned_to.username', read_only=True)
