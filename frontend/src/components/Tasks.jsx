@@ -224,7 +224,12 @@ const TaskManager = () => {
       />
 
       <h2>Task Manager</h2>
-      {userPerms.permissions?.tasks?.includes('add_task') && (
+      {/* {userPerms.permissions?.tasks?.includes('add_task') && (
+        <button className="btn btn-success mb-3 mt-5" onClick={() => setShowForm(true)}>
+          <FaPlus /> Create Task
+        </button>
+      )} */}
+      {userPerms.permissions?.codename ==='add_task' && (
         <button className="btn btn-success mb-3 mt-5" onClick={() => setShowForm(true)}>
           <FaPlus /> Create Task
         </button>
