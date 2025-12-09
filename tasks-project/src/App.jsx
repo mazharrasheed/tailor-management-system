@@ -33,7 +33,7 @@ function App() {
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<Signup />} />
-           <Route path="/allusers" element={token ? <CreateUser /> : <Navigate to="/login" />} />
+          <Route path="/allusers" element={token ? <CreateUser /> : <Navigate to="/login" />} />
           <Route path="/tasks" element={token ?<Task />: <Navigate to="/login" />}/>
           <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/login" /> } />
           <Route path="/profile" element={token ? <Profile /> :<Navigate to="/login" />} />

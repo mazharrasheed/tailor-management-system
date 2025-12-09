@@ -6,7 +6,6 @@ import Navbar from './components/Navbar';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
 import Task from './components/Tasks';
-import Category from './components/Category';
 import CustomerManager from './components/CustomerManager';
 import CreateUser from './components/CreateUser';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -29,11 +28,10 @@ function App() {
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<Signup />} />
-          {/* <Route path="/allusers" element={<Users />} /> */}
-          <Route path="/allusers" element={<CreateUser />} />
-          <Route path="/tasks" element={<Task />} />
-          <Route path="/customers" element={<CustomerManager />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/allusers" element={token ? <CreateUser /> : <Navigate to="/login" />} />
+          <Route path="/tasks" element={token ?<Task />: <Navigate to="/login" />}/>
+          <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/login" /> } />
+          <Route path="/profile" element={token ? <Profile /> :<Navigate to="/login" />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>
       </AuthProvider>

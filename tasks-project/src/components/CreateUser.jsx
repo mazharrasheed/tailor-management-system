@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
-import axios from 'axios';
 export default function UserManagement() {
+  const { token } = useContext(AuthContext);
 
-  const api= axios
   const [form, setForm] = useState({
     id: null,
     username: "",
@@ -16,28 +17,32 @@ export default function UserManagement() {
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch all permissions from Django
-
-
+  // Load Allowed Permissions of Logged-in User
   useEffect(() => {
-  api.get("http://127.0.0.1:8000/users/me/permissions/")
-    .then(res => {
-      // flatten all app permissions into one array
-      const permsObj = res.data.permissions; // adjust if response shape differs
-      const flatPermissions = Object.values(permsObj).flat();
-      setPermissions(flatPermissions);
-    })
-    .catch(err => console.error("Failed to fetch permissions", err));
-}, []);
+    axios
+      .get(
+        "https://anmoltailor.pythonanywhere.com/api/users/me/permissions/",
+        {
+          headers: { Authorization: `Token ${token}` }
+        }
+      )
+      .then((res) => {
+        console.log("RAW PERMISSIONS:", res.data);
 
-  // Fetch all users
+        const perms = res.data.permissions || [];
+        setPermissions(perms); // Already a flat list
+      })
+      .catch((err) => console.error("Failed to load permissions:", err));
+  }, []);
+
+  // Load Users
   const fetchUsers = () => {
     setLoading(true);
-    api.get("http://127.0.0.1:8000/api/users/")
-      .then(res => {
-        setUsers(res.data);
+    axios
+      .get("https://anmoltailor.pythonanywhere.com/api/users/", {
+        headers: { Authorization: `Token ${token}` }
       })
-      .catch(err => console.error(err))
+      .then((res) => setUsers(res.data))
       .finally(() => setLoading(false));
   };
 
@@ -45,37 +50,50 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
+  // Handle input fields
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Toggle Permission Checkbox
   const handlePermissionToggle = (perm) => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
       permissions: prev.permissions.includes(perm)
-        ? prev.permissions.filter(p => p !== perm)
+        ? prev.permissions.filter((p) => p !== perm)
         : [...prev.permissions, perm]
     }));
   };
 
+  // Save User
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       if (form.id) {
-        await api.put(`/users/${form.id}/`, form);
-        alert("✅ User updated successfully");
+        await axios.put(
+          `https://anmoltailor.pythonanywhere.com/api/users/${form.id}/`,
+          form,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        alert("User updated successfully");
       } else {
-        await api.post("/users/", form);
-        alert("✅ User created successfully");
+        await axios.post(
+          "https://anmoltailor.pythonanywhere.com/api/users/",
+          form,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        alert("User created successfully");
       }
+
       resetForm();
       fetchUsers();
     } catch (err) {
-      alert(err.response?.data?.detail || "❌ Failed to save user");
+      alert("Failed to save user");
     }
   };
 
+  // Load User for Editing
   const handleEdit = (user) => {
     setIsEditing(true);
     setForm({
@@ -96,14 +114,18 @@ export default function UserManagement() {
     });
   };
 
+  // Delete User
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    if (!window.confirm("Delete this user?")) return;
+
     try {
-      await api.delete(`/users/${id}/`);
-      alert("✅ User deleted successfully");
+      await axios.delete(
+        `https://anmoltailor.pythonanywhere.com/api/users/${id}/`,
+        { headers: { Authorization: `Token ${token}` } }
+      );
       fetchUsers();
     } catch (err) {
-      alert(err.response?.data?.detail || "❌ Failed to delete user");
+      alert("Failed to delete user");
     }
   };
 
@@ -111,6 +133,7 @@ export default function UserManagement() {
     <div className="container mt-4">
       <h2>User Management</h2>
 
+      {/* Form */}
       <form onSubmit={handleSubmit} className="mb-4">
         <div className="row">
           <div className="col-md-4 mb-3">
@@ -140,6 +163,7 @@ export default function UserManagement() {
           )}
         </div>
 
+        {/* Permissions */}
         <div className="mb-3">
           <label>Permissions</label>
           <div className="border rounded p-3 d-flex flex-wrap">
@@ -163,13 +187,15 @@ export default function UserManagement() {
         <button type="submit" className="btn btn-primary me-2">
           {form.id ? "Update User" : "Create User"}
         </button>
+
         {form.id && (
-          <button type="button" className="btn btn-secondary" onClick={resetForm}>
+          <button type="button" onClick={resetForm} className="btn btn-secondary">
             Cancel
           </button>
         )}
       </form>
 
+      {/* User List */}
       <h3>User List</h3>
       {loading ? (
         <p>Loading users...</p>
@@ -183,22 +209,42 @@ export default function UserManagement() {
             </tr>
           </thead>
           <tbody>
-            {users.length > 0 ? users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.username}</td>
-                <td>
-                  {user.permissions.map((p, i) => (
-                    <span key={i} className="badge bg-secondary me-1">{p}</span>
-                  ))}
-                </td>
-                <td className="d-flex justify-content-end">
-                  <button className="btn btn-sm btn-warning me-2" onClick={() => handleEdit(user)}>Edit</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => handleDelete(user.id)}>Delete</button>
-                </td>
-              </tr>
-            )) : (
+            {users.length > 0 ? (
+              users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.username}</td>
+                  <td>
+                    {user.permissions?.length > 0 ? (
+                      user.permissions.map((p, i) => (
+                        <span key={i} className="badge bg-secondary me-1">
+                          {p}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-muted">No permissions</span>
+                    )}
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-warning btn-sm me-2"
+                      onClick={() => handleEdit(user)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDelete(user.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan="3" className="text-center">No users found</td>
+                <td colSpan="3" className="text-center">
+                  No users found
+                </td>
               </tr>
             )}
           </tbody>
