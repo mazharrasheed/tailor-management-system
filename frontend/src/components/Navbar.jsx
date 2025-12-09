@@ -34,15 +34,15 @@ export default function Navbar() {
                     </NavLink>
                   </li>
                   <li className="nav-item">
-                    <NavLink className={getNavLinkClass} to="/categories">
+                    <NavLink className={getNavLinkClass} to="/customers">
                       Customers
                     </NavLink>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <NavLink className={getNavLinkClass} to="/profile">
                       Profile
                     </NavLink>
-                  </li>
+                  </li> */}
                 </>
               )}
 

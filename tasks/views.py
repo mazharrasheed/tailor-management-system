@@ -112,6 +112,7 @@ def user_permissions_view(request):
         permissions_by_app.setdefault(app_label, []).append(codename)
 
     if not permissions_by_app:
+        print("no permissions")
         return Response({
             'username': user.username,
             'permissions': {'tasks':[]}
@@ -121,6 +122,36 @@ def user_permissions_view(request):
             'username': user.username,
             'permissions': permissions_by_app
     })
+
+from rest_framework.response import Response
+from django.contrib.auth.models import Permission
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def user_permissions_view(request):
+    user = request.user
+
+    # Get permission strings: app.codename
+    user_permissions = user.get_all_permissions()
+
+    # Build full objects from Permission model
+    permission_objects = []
+    for perm_str in user_permissions:
+        app_label, codename = perm_str.split(".")
+        try:
+            perm = Permission.objects.get(codename=codename)
+            permission_objects.append({
+                "codename": perm.codename,
+                "name": perm.name,
+                "app_label": app_label
+            })
+        except Permission.DoesNotExist:
+            pass
+
+    return Response({
+        "username": user.username,
+        "permissions": permission_objects
+    })
+
 
 class CustomerViewSet(viewsets.ModelViewSet):
 

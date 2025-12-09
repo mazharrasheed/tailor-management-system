@@ -7,6 +7,8 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import Task from './components/Tasks';
 import Category from './components/Category';
+import CustomerManager from './components/CustomerManager';
+import CreateUser from './components/CreateUser';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import { AuthProvider } from './context/AuthContext';
@@ -27,9 +29,10 @@ function App() {
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/allusers" element={<Users />} />
-
-          <Route path="/customers" element={<Category />} />
+          {/* <Route path="/allusers" element={<Users />} /> */}
+          <Route path="/allusers" element={<CreateUser />} />
+          <Route path="/tasks" element={<Task />} />
+          <Route path="/customers" element={<CustomerManager />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>

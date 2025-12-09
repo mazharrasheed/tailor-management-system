@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import axios from 'axios';
-export default function UserManagement() {
+import { AuthContext } from '../context/AuthContext';
 
-  const api= axios
+
+export default function UserManagement() {
+  const { token } = useContext(AuthContext);
   const [form, setForm] = useState({
     id: null,
     username: "",
@@ -18,22 +20,27 @@ export default function UserManagement() {
 
   // Fetch all permissions from Django
 
-
   useEffect(() => {
-  api.get("https://anmoltailor.pythonanywhere.com/me/permissions/")
-    .then(res => {
-      // flatten all app permissions into one array
-      const permsObj = res.data.permissions; // adjust if response shape differs
-      const flatPermissions = Object.values(permsObj).flat();
-      setPermissions(flatPermissions);
+    axios.get("https://anmoltailor.pythonanywhere.com/api/users/me/permissions/", {
+      headers: { Authorization: `Token ${token}` }
     })
-    .catch(err => console.error("Failed to fetch permissions", err));
-}, []);
+      .then(res => {
+        console.log("RAW PERMISSIONS:", res.data);
+
+        const perms = res.data.permissions || [];
+        setPermissions(perms);   // <--- now a flat array of {codename, name}
+      })
+      .catch(err => console.error("Failed to load permissions", err));
+  }, []);
 
   // Fetch all users
   const fetchUsers = () => {
     setLoading(true);
-    api.get("https://anmoltailor.pythonanywhere.com/api/users/")
+    axios.get("https://anmoltailor.pythonanywhere.com/api/users/", {
+      headers: {
+        Authorization: `Token ${token}`
+      }
+    })
       .then(res => {
         setUsers(res.data);
       })
@@ -140,24 +147,21 @@ export default function UserManagement() {
           )}
         </div>
 
-        <div className="mb-3">
-          <label>Permissions</label>
-          <div className="border rounded p-3 d-flex flex-wrap">
-            {permissions.map((perm) => (
-              <div key={perm.codename} className="form-check me-3 mb-2">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id={perm.codename}
-                  checked={form.permissions.includes(perm.codename)}
-                  onChange={() => handlePermissionToggle(perm.codename)}
-                />
-                <label className="form-check-label" htmlFor={perm.codename}>
-                  {perm.name}
-                </label>
-              </div>
-            ))}
-          </div>
+        <div className="border rounded p-3 d-flex flex-wrap">
+          {permissions.map((perm) => (
+            <div key={perm.codename} className="form-check me-3 mb-2">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id={perm.codename}
+                checked={form.permissions.includes(perm.codename)}
+                onChange={() => handlePermissionToggle(perm.codename)}
+              />
+              <label className="form-check-label" htmlFor={perm.codename}>
+                {perm.name}
+              </label>
+            </div>
+          ))}
         </div>
 
         <button type="submit" className="btn btn-primary me-2">
@@ -187,9 +191,15 @@ export default function UserManagement() {
               <tr key={user.id}>
                 <td>{user.username}</td>
                 <td>
-                  {user.permissions.map((p, i) => (
-                    <span key={i} className="badge bg-secondary me-1">{p}</span>
-                  ))}
+                  {user.permissions && user.permissions.length > 0 ? (
+                    user.permissions.map((p, i) => (
+                      <span key={i} className="badge bg-secondary me-1">
+                        {p}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-muted">No permissions</span>
+                  )}
                 </td>
                 <td className="d-flex justify-content-end">
                   <button className="btn btn-sm btn-warning me-2" onClick={() => handleEdit(user)}>Edit</button>

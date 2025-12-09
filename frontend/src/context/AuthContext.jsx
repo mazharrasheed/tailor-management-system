@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const fetchPermissions = async () => {
-    const response = await axios.get('http://authsandtasks.pythonanywhere.com/api/users/me/permissions/', {
+    const response = await axios.get('http://anmoltailor.pythonanywhere.com/api/users/me/permissions/', {
       headers: { Authorization: `Token ${token}` },
     });
     setUserPerms(response.data);

@@ -121,11 +121,11 @@ const CustomerManager = () => {
         e.preventDefault();
         try {
             if (editingId) {
-                await axios.put(`http://127.0.0.1:8000/api/customers/${editingId}/`, formData, {
+                await axios.put(`https://anmoltailor.pythonanywhere.com/api/customers/${editingId}/`, formData, {
                     headers: { Authorization: `Token ${token}` },
                 });
             } else {
-                await axios.post("http://127.0.0.1:8000/api/customers/", formData, {
+                await axios.post("https://anmoltailor.pythonanywhere.com/api/customers/", formData, {
                     headers: { Authorization: `Token ${token}` },
                 });
             }
@@ -140,7 +140,7 @@ const CustomerManager = () => {
 
     const confirmDelete = async () => {
         try {
-            const res = await axios.delete(`http://127.0.0.1:8000/api/customers/${customerToDelete}/`, {
+            const res = await axios.delete(`https://anmoltailor.pythonanywhere.com/api/customers/${customerToDelete}/`, {
                 headers: { Authorization: `Token ${token}` },
             });
             if (res.status === 204) {
