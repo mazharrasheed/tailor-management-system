@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task,Category
+from .models import Task
 from django.contrib.auth.models import User
 import re
 
@@ -113,12 +113,3 @@ class CustomerSerializer(serializers.ModelSerializer):
 
             'created_at'
         ]
-
-
-class CategorySerializer(serializers.ModelSerializer):
-
-    class Meta:
-
-        model=Category
-        fields=['id','name']
-        

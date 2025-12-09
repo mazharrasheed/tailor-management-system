@@ -59,7 +59,7 @@ const CustomerManager = () => {
 
     useEffect(() => {
         fetchCustomers();
-        fetchPermissions();
+        // fetchPermissions();
     }, []);
 
     const fetchCustomers = async () => {

@@ -1,14 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import TaskViewSet,UserSignupView,UserListView,UserProfileView,UserViewSet,current_user,user_permissions_view,CustomerViewSet
-from .views import CategoryViewSet
 
 router = DefaultRouter()
 
 router.register(r'tasks', TaskViewSet,basename='task')
 router.register(r'users', UserViewSet,basename='user')
 router.register(r'customers', CustomerViewSet,basename='customer')
-router.register(r'categories', CategoryViewSet,basename='category')
+
 
 urlpatterns = [
     path('', include(router.urls)),
