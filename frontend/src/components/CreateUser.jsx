@@ -65,42 +65,6 @@ export default function UserManagement() {
     }));
   };
 
-  // // Save User
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     if (form.id) {
-  //       const payload = {
-  //         username: form.username,
-  //         password: form.password || undefined,
-  //         permissions: form.permissions.map(codename => {
-  //           const permObj = permissions.find(p => p.codename === codename);
-  //           return permObj ? permObj : { codename };
-  //         })
-  //       };
-  //       await axios.put(
-  //         `https://anmoltailor.pythonanywhere.com/api/users/${form.id}/`,
-  //         payload,
-  //         { headers: { Authorization: `Token ${token}` } }
-  //       );
-
-  //     } else {
-  //       await axios.post(
-  //         "https://anmoltailor.pythonanywhere.com/api/users/",
-  //         form,
-  //         { headers: { Authorization: `Token ${token}` } }
-  //       );
-  //       alert("User created successfully");
-  //     }
-
-  //     resetForm();
-  //     fetchUsers();
-  //   } catch (err) {
-  //     alert("Failed to save user");
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -137,15 +101,15 @@ export default function UserManagement() {
 
 
   // Load User for Editing
-  const handleEdit = (user) => {
-    setIsEditing(true);
-    setForm({
-      id: user.id,
-      username: user.username,
-      password: "",
-      permissions: user.permissions?.map(p => p.codename) || []
-    });
-  };
+const handleEdit = (user) => {
+  setIsEditing(true);
+  setForm({
+    id: user.id,
+    username: user.username,
+    password: "",
+    permissions: user.permission_details?.map(p => p.codename) || []
+  });
+};
 
   const resetForm = () => {
     setIsEditing(false);

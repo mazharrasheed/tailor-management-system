@@ -51,32 +51,71 @@ class UserSignupSerializer(serializers.ModelSerializer):
 #         model = User
 #         fields = ['id', 'username']
 
+from rest_framework import serializers
+from django.contrib.auth.models import User, Permission
+
 class UserSerializer(serializers.ModelSerializer):
-    permissions = serializers.SerializerMethodField()
+    permissions = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
+    permission_details = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'permissions']  # include permissions
+        fields = ["id", "username", "email", "password", "permissions", "permission_details"]
+        extra_kwargs = {"password": {"write_only": True}}
 
-    def get_permissions(self, obj):
-        # Return all permissions the user has
-        user_perms = obj.get_all_permissions()
-
-        # Convert "app.codename" to object list
-        perms_list = []
-        for perm in user_perms:
-            app_label, codename = perm.split('.')
+    def get_permission_details(self, obj):
+        perms = obj.get_all_permissions()
+        output = []
+        for p in perms:
+            app_label, codename = p.split(".")
             try:
                 perm_obj = Permission.objects.get(codename=codename)
-                perms_list.append({
+                output.append({
                     "codename": perm_obj.codename,
                     "name": perm_obj.name,
-                    "app_label": app_label
+                    "app_label": app_label,
                 })
             except Permission.DoesNotExist:
                 pass
+        return output
 
-        return perms_list
+    def create(self, validated_data):
+        permissions = validated_data.pop("permissions", [])
+        password = validated_data.pop("password", None)
+
+        user = User.objects.create(**validated_data)
+        if password:
+            user.set_password(password)
+            user.save()
+
+        # Apply permissions
+        perms_qs = Permission.objects.filter(codename__in=permissions)
+        user.user_permissions.set(perms_qs)
+
+        return user
+
+    def update(self, instance, validated_data):
+        permissions = validated_data.pop("permissions", None)
+
+        password = validated_data.pop("password", None)
+        if password:
+            instance.set_password(password)
+
+        # Update all other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        # Update permissions
+        if permissions is not None:
+            perms_qs = Permission.objects.filter(codename__in=permissions)
+            instance.user_permissions.set(perms_qs)
+
+        return instance
+
     
 class TaskSerializer(serializers.ModelSerializer):
     assigned_to_username = serializers.CharField(source='assigned_to.username', read_only=True)
