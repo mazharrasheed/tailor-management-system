@@ -24,11 +24,6 @@ export default function Navbar() {
               {token && (
                 <>
                   <li className="nav-item">
-                    <NavLink className={getNavLinkClass} to="/allusers">
-                      Users
-                    </NavLink>
-                  </li>
-                  <li className="nav-item">
                     <NavLink className={getNavLinkClass} to="/tasks">
                       Tasks
                     </NavLink>
