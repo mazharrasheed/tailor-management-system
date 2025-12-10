@@ -24,12 +24,12 @@ urlpatterns = [
     path('api-token-auth/', csrf_exempt(obtain_auth_token)),
     path('api/', include('tasks.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    # React frontend
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
-    re_path(r'^(?!admin).*$', TemplateView.as_view(template_name='index.html')),
 ]
 
 
 urlpatterns += [
     path('api-token-auth/', obtain_auth_token),
+     # React frontend
+    re_path(r'^$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^(?!admin/).*$', TemplateView.as_view(template_name='index.html')),
 ]

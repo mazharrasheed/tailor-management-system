@@ -11,6 +11,7 @@ import ConfirmModal from './ConfirmModal';
 import Table from './Table';
 import ReusableTable from './ReusableTable';
 const TaskManager = () => {
+  const apiBase = "https://anmoltailor.pythonanywhere.com/api"; // adjust as needed
   const { token } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
@@ -38,7 +39,7 @@ const TaskManager = () => {
 
   const fetchCustomers = async () => {
     try {
-      const res = await axios.get("https://anmoltailor.pythonanywhere.com/api/customers/", {
+      const res = await axios.get(`${apiBase}/customers/`, {
         headers: { Authorization: `Token ${token}` },
       });
       setCustomers(res.data);
@@ -52,7 +53,7 @@ const TaskManager = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/tasks/', {
+      const response = await axios.get(`${apiBase}/tasks/`, {
         headers: { Authorization: `Token ${token}` },
       });
       setTasks(response.data);
@@ -68,7 +69,7 @@ const TaskManager = () => {
   const [userPerms, setUserPerms] = useState({});
 
   const fetchPermissions = async () => {
-    const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/users/me/permissions/', {
+    const response = await axios.get(`${apiBase}/users/me/permissions/`, {
       headers: { Authorization: `Token ${token}` },
     });
 
@@ -84,7 +85,7 @@ const TaskManager = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/users/', {
+      const response = await axios.get(`${apiBase}/users/`, {
         headers: { Authorization: `Token ${token}` },
       });
       setUsers(response.data);
@@ -116,11 +117,11 @@ const TaskManager = () => {
     e.preventDefault();
     try {
       if (editingTaskId) {
-        await axios.put(`https://anmoltailor.pythonanywhere.com/api/tasks/${editingTaskId}/`, formData, {
+        await axios.put(`${apiBase}/tasks/${editingTaskId}/`, formData, {
           headers: { Authorization: `Token ${token}` },
         });
       } else {
-        await axios.post('https://anmoltailor.pythonanywhere.com/api/tasks/', formData, {
+        await axios.post(`${apiBase}/tasks/`, formData, {
           headers: { Authorization: `Token ${token}` },
         });
       }
@@ -134,7 +135,7 @@ const TaskManager = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await axios.delete(`https://anmoltailor.pythonanywhere.com/api/tasks/${taskToDelete}/`, {
+      const response = await axios.delete(`${apiBase}/tasks/${taskToDelete}/`, {
         headers: { Authorization: `Token ${token}` },
       });
       if (response.status === 204) {

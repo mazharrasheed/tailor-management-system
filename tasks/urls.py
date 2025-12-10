@@ -1,12 +1,21 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import TaskViewSet,UserSignupView,UserListView,UserProfileView,UserViewSet,current_user,user_permissions_view,CustomerViewSet
-
+from .views import (
+    ShalwarQameezViewSet, ShirtViewSet, TrouserViewSet,
+    VaseCoatViewSet, SheerVaniViewSet, CoatViewSet
+)
 router = DefaultRouter()
 
 router.register(r'tasks', TaskViewSet,basename='task')
 router.register(r'users', UserViewSet,basename='user')
 router.register(r'customers', CustomerViewSet,basename='customer')
+router.register(r'shalwar-qameez', ShalwarQameezViewSet)
+router.register(r'shirt', ShirtViewSet)
+router.register(r'trouser', TrouserViewSet)
+router.register(r'vase-coat', VaseCoatViewSet)
+router.register(r'sheer-vani', SheerVaniViewSet)
+router.register(r'coat', CoatViewSet)
 
 
 urlpatterns = [
@@ -17,5 +26,3 @@ urlpatterns = [
     path('signup/',UserSignupView.as_view(),name='singup' ),
     path('users/me/permissions/',user_permissions_view),
 ]
-
-

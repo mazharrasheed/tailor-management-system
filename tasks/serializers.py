@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from .models import Task
+from .models import (
+    Shalwar_Qameez, Shirt, Trouser,
+    Vase_Coat, Sheer_Vani, Coat
+)
 from django.contrib.auth.models import User
 import re
 from django.contrib.auth.models import Permission
@@ -74,31 +78,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         return perms_list
     
-# class UserSerializer(serializers.ModelSerializer):
-#     # writable field
-#     permission_codenames = serializers.SlugRelatedField(
-#         many=True,
-#         slug_field="codename",
-#         queryset=Permission.objects.all(),
-#         source="user_permissions"
-#     )
-#     # read-only pretty output
-#     permissions = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username', 'email', 'permissions', 'permission_codenames']
-
-#     def get_permissions(self, obj):
-#         perms_list = []
-#         for perm in obj.user_permissions.all():
-#             perms_list.append({
-#                 "codename": perm.codename,
-#                 "name": perm.name,
-#                 "app_label": perm.content_type.app_label
-#             })
-#         return perms_list
-
 class TaskSerializer(serializers.ModelSerializer):
     assigned_to_username = serializers.CharField(source='assigned_to.username', read_only=True)
 
@@ -140,29 +119,41 @@ class CustomerSerializer(serializers.ModelSerializer):
             'Phome_number',
             'Adress',
             'description',
-
-            'front_pocket_right',
-            'side_pocket_left',
-            'side_pocket_right',
-            'side_pocket_left',
-
-            'coller',
-            'tera',
-            'sleve_length',
-            'sleve_hole',
-            'cuff_hole',
-            'cuff_width',
-
-            'chest',
-            'belly',
-
-            'shirt_kera_round',
-            'shirt_kera',
-            'shirt_length',
-
-            'shalwar_length',
-            'shalwar_hole',
-            'shalwar_pocket',
-
             'created_at'
         ]
+
+
+class ShalwarQameezSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shalwar_Qameez
+        fields = "__all__"
+
+
+class ShirtSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shirt
+        fields = "__all__"
+
+
+class TrouserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Trouser
+        fields = "__all__"
+
+
+class VaseCoatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vase_Coat
+        fields = "__all__"
+
+
+class SheerVaniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sheer_Vani
+        fields = "__all__"
+
+
+class CoatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coat
+        fields = "__all__"

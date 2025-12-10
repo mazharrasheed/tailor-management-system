@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',  # If you're using token auth
     'corsheaders',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -123,6 +124,14 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+STATICFILES_DIRS = [
+    BASE_DIR / "frontend" / "dist" / "assets",
+]
+
+TEMPLATES[0]["DIRS"] = [
+    BASE_DIR / "frontend" / "dist",
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -138,7 +147,6 @@ REST_FRAMEWORK = {
     ]
 }
 
-
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React's dev server
     "http://127.0.0.1:5173",
@@ -148,14 +156,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://anmoltailor.pythonanywhere.com",
    
-]
-
-STATICFILES_DIRS = [
-    BASE_DIR / "frontend" / "dist" / "assets",
-]
-
-TEMPLATES[0]["DIRS"] = [
-    BASE_DIR / "frontend" / "dist",
 ]
 
 ALLOWED_HOSTS = [

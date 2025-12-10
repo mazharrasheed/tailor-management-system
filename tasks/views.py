@@ -6,6 +6,10 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Task,Customer
 from .serializers import TaskSerializer,UserSignupSerializer,CustomerSerializer
+from .serializers import (
+    ShalwarQameezSerializer, ShirtSerializer, TrouserSerializer,
+    VaseCoatSerializer, SheerVaniSerializer, CoatSerializer
+)
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -164,3 +168,87 @@ class CustomerViewSet(viewsets.ModelViewSet):
         print(self.request.user,self.request.data)
         return super().create(request, *args, **kwargs)
     
+
+from rest_framework import viewsets, permissions
+
+from .models import (
+    Shalwar_Qameez, Shirt, Trouser,
+    Vase_Coat, Sheer_Vani, Coat
+)
+from django_filters.rest_framework import DjangoFilterBackend
+class ShalwarQameezViewSet(viewsets.ModelViewSet):
+    queryset = Shalwar_Qameez.objects.all()
+    serializer_class = ShalwarQameezSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = Shalwar_Qameez.objects.all()
+        customer_id = self.request.query_params.get("customer")
+        print(customer_id)
+        if customer_id:
+            qs = qs.filter(customer_id=customer_id)
+        return qs
+
+
+class ShirtViewSet(viewsets.ModelViewSet):
+    queryset = Shirt.objects.all()
+    serializer_class = ShirtSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        qs = Shirt.objects.all()
+        customer_id = self.request.query_params.get("customer")
+        print(customer_id)
+        if customer_id:
+            qs = qs.filter(customer_id=customer_id)
+        return qs
+
+class TrouserViewSet(viewsets.ModelViewSet):
+    queryset = Trouser.objects.all()
+    serializer_class = TrouserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        qs = Trouser.objects.all()
+        customer_id = self.request.query_params.get("customer")
+        print(customer_id)
+        if customer_id:
+            qs = qs.filter(customer_id=customer_id)
+        return qs
+
+
+class VaseCoatViewSet(viewsets.ModelViewSet):
+    queryset = Vase_Coat.objects.all()
+    serializer_class = VaseCoatSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        qs = Vase_Coat.objects.all()
+        customer_id = self.request.query_params.get("customer")
+        print(customer_id)
+        if customer_id:
+            qs = qs.filter(customer_id=customer_id)
+        return qs
+
+
+class SheerVaniViewSet(viewsets.ModelViewSet):
+    queryset = Sheer_Vani.objects.all()
+    serializer_class = SheerVaniSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        qs = Sheer_Vani.objects.all()
+        customer_id = self.request.query_params.get("customer")
+        print(customer_id)
+        if customer_id:
+            qs = qs.filter(customer_id=customer_id)
+        return qs
+
+
+class CoatViewSet(viewsets.ModelViewSet):
+    queryset = Coat.objects.all()
+    serializer_class = CoatSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        qs = Coat.objects.all()
+        customer_id = self.request.query_params.get("customer")
+        print(customer_id)
+        if customer_id:
+            qs = qs.filter(customer_id=customer_id)
+        return qs

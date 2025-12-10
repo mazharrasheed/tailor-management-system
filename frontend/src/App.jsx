@@ -9,6 +9,8 @@ import Profile from './components/Profile';
 import Task from './components/Tasks';
 import CustomerManager from './components/CustomerManager';
 import CreateUser from './components/CreateUser';
+import ShalwarQameez from './components/ShalwarQameez';
+import CustomerDetails from './components/CustomerDetails';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import { AuthProvider } from './context/AuthContext';
@@ -36,6 +38,7 @@ function App() {
           <Route path="/allusers" element={token ? <CreateUser /> : <Navigate to="/login" />} />
           <Route path="/tasks" element={token ?<Task />: <Navigate to="/login" />}/>
           <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/login" /> } />
+          <Route path="/customer-details/:id" element={ token ? <CustomerDetails /> : <Navigate to="/login" /> } />
           <Route path="/profile" element={token ? <Profile /> :<Navigate to="/login" />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>
