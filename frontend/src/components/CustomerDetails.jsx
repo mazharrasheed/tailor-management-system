@@ -91,6 +91,7 @@ export default function CustomerMeasurements() {
     const { token } = useContext(AuthContext);
     const { id } = useParams(); // customer id from route
     const CustId = parseInt(id, 10);
+    const [customer, setCustomer] = useState(null);
 
     const apiBase = "https://anmoltailor.pythonanywhere.com/api";
 
@@ -112,6 +113,22 @@ export default function CustomerMeasurements() {
         setMeasurements(null); // clear old data
         console.log("Customer ID changed, reloading measurements:", CustId);
     }, [CustId]);
+
+    useEffect(() => {
+          const fetchCustomer = async (id) => {
+        try {
+            const res = await axios.get(`${apiBase}/customers/${id}/`, {
+                headers: { Authorization: `Token ${token}` },
+            });
+            console.log(res.data)
+            setCustomer(res.data) ;
+        } catch (err) {
+            console.error("Failed to fetch customers:", err);
+        }
+    };
+        fetchCustomer(CustId);
+    }, [CustId]);
+
 
     useEffect(() => {
         if (!CustId) return;
@@ -298,9 +315,9 @@ export default function CustomerMeasurements() {
 
     return (
         <div className="container mt-3">
-            <h3>Customer Measurements</h3>
-            <p>Customer ID: {CustId}</p>
-
+            {customer ? <h3 className="m-3">Customer Name: {customer.name}</h3> : <p>Loading…</p>}
+            <h3 className="m-3">Customer Measurements</h3>
+          
             {Object.keys(TYPES).map((key) => {
                 const meta = TYPES[key];
                 const entry = measurements[key] || { exists: false, record: null };
@@ -323,7 +340,9 @@ export default function CustomerMeasurements() {
                                         </div>
                                     </div>
                                 ) : (
+                                  
                                     <p className="text-muted">No measurement yet.</p>
+                                   
                                 )}
                             </div>
                             <div className="d-flex flex-column gap-2">

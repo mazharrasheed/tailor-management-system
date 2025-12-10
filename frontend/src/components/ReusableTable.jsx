@@ -159,7 +159,11 @@ const ReusableTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20], extra 
             ) : (
               <tr>
                 <td colSpan={columns.length} className="text-center">
-                  No data found.
+                  <p>Loading…</p>
+                  <div class="spinner-border text-primary" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+                  
                 </td>
               </tr>
             )}

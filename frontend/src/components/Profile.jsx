@@ -27,13 +27,16 @@ const Profile = () => {
             <h2>User Profile</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {users.length === 0 ? (
-                <p>No users found.</p>
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             ) : (
                 <ul>
-                    {users.map((user , index) => (
-                        <span  key={user.id || index}>
+                    {users.map((user, index) => (
+                        <span key={user.id || index}>
                             <h1 >User Name: {user.username}</h1>
                             <h2 > Email: ({user.email})</h2>
+                            
                         </span>
                     ))}
                 </ul>
