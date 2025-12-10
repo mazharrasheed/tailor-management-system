@@ -26,6 +26,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     # React frontend
     re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^(?!admin).*$', TemplateView.as_view(template_name='index.html')),
 ]
 
 
