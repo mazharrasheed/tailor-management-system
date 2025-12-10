@@ -2,11 +2,13 @@ from rest_framework import serializers
 from .models import Task
 from .models import (
     Shalwar_Qameez, Shirt, Trouser,
-    Vase_Coat, Sheer_Vani, Coat
+    Vase_Coat, Sheer_Vani, Coat,Customer
 )
 from django.contrib.auth.models import User
 import re
-from django.contrib.auth.models import Permission
+from rest_framework import serializers
+from django.contrib.auth.models import User, Permission
+
 
 class UserSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -45,25 +47,49 @@ class UserSignupSerializer(serializers.ModelSerializer):
         )
         return user
 
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username']
-
-from rest_framework import serializers
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Group
 
 class UserSerializer(serializers.ModelSerializer):
     permissions = serializers.ListField(
         child=serializers.CharField(), write_only=True, required=False
     )
     permission_details = serializers.SerializerMethodField(read_only=True)
+    group_details = serializers.SerializerMethodField()
+    groups = serializers.PrimaryKeyRelatedField(
+        queryset=Group.objects.all(),
+        many=True,
+        required=False
+    )
 
     class Meta:
         model = User
-        fields = ["id", "username", "email", "password", "permissions", "permission_details"]
-        extra_kwargs = {"password": {"write_only": True}}
+        fields = [
+            "id",
+            "username",
+            "email",
+            "password",
+            "groups",
+            "permissions",
+            "permission_details",
+            "group_details",
+        ]
+        extra_kwargs = {
+            "password": {"write_only": True, "required": False}   # ✓ Make optional
+        }
+
+    def validate(self, data):
+        # Require password ONLY when creating new user
+        if self.instance is None and not data.get("password"):
+            raise serializers.ValidationError({
+                "password": ["This field is required for new users."]
+            })
+        return data
+    
+    def get_group_details(self, obj):
+        return [
+            {"id": g.id, "name": g.name}
+            for g in obj.groups.all()
+    ]
 
     def get_permission_details(self, obj):
         perms = obj.get_all_permissions()
@@ -83,40 +109,45 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         permissions = validated_data.pop("permissions", [])
-        password = validated_data.pop("password", None)
+        groups = validated_data.pop("groups", [])
+        password = validated_data.pop("password")
 
-        user = User.objects.create(**validated_data)
-        if password:
-            user.set_password(password)
-            user.save()
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
 
-        # Apply permissions
-        perms_qs = Permission.objects.filter(codename__in=permissions)
-        user.user_permissions.set(perms_qs)
+        if groups:
+            user.groups.set(groups)
+
+        if permissions:
+            perms_qs = Permission.objects.filter(codename__in=permissions)
+            user.user_permissions.set(perms_qs)
 
         return user
 
     def update(self, instance, validated_data):
         permissions = validated_data.pop("permissions", None)
-
+        groups = validated_data.pop("groups", None)
         password = validated_data.pop("password", None)
+
         if password:
             instance.set_password(password)
 
-        # Update all other fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
         instance.save()
 
-        # Update permissions
+        if groups is not None:
+            instance.groups.set(groups)
+
         if permissions is not None:
             perms_qs = Permission.objects.filter(codename__in=permissions)
             instance.user_permissions.set(perms_qs)
 
         return instance
 
-    
+
 class TaskSerializer(serializers.ModelSerializer):
     assigned_to_username = serializers.CharField(source='assigned_to.username', read_only=True)
 
@@ -132,21 +163,6 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'title','customer' ,'description', 'completed', 'assigned_to', 'assigned_to_username', 'created_at','due_date']
-
-
-from rest_framework import serializers
-from .models import Customer
-
-
-from rest_framework import serializers
-from .models import Customer
-
-from rest_framework import serializers
-from .models import Customer
-
-
-from rest_framework import serializers
-from .models import Customer
 
 
 class CustomerSerializer(serializers.ModelSerializer):

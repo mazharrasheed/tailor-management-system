@@ -316,7 +316,7 @@ export default function CustomerMeasurements() {
     return (
         <div className="container mt-3">
             {customer ? <h3 className="m-3">Customer Name: {customer.name}</h3> : <p>Loading…</p>}
-            <h3 className="m-3">Customer Measurements</h3>
+            <h3 className="m-3">Measurements</h3>
           
             {Object.keys(TYPES).map((key) => {
                 const meta = TYPES[key];

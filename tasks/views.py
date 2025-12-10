@@ -19,6 +19,10 @@ from rest_framework.decorators import api_view, permission_classes
 from .serializers import TaskSerializer, UserSerializer
 from rest_framework.decorators import action
 from rest_framework.permissions import DjangoObjectPermissions
+from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Group
+
+
 
 class UserProfileView(APIView):
 
@@ -95,39 +99,12 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def current_user(request):
-    return Response({
-        'id': request.user.id,
-        'username': request.user.username,
-        'is_superuser': request.user.is_superuser
-    })
+    def list(self, request, *args, **kwargs):
+        users = self.get_queryset()
+        serializer = self.get_serializer(users, many=True)
+        return Response(serializer.data)
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def user_permissions_view(request):
-#     user = request.user
-#     all_perms = user.get_all_permissions()  # returns set of strings like "app_label.codename"
-#     # Optional: group permissions by app
-#     permissions_by_app = {}
-#     for perm in all_perms:
-#         app_label, codename = perm.split('.')
-#         permissions_by_app.setdefault(app_label, []).append(codename)
 
-#     if not permissions_by_app:
-#         return Response({
-#             'username': user.username,
-#             'permissions': {'tasks':[]}
-#     })  
-#     else:
-#         return Response({
-#             'username': user.username,
-#             'permissions': permissions_by_app
-    # })
-
-from rest_framework.response import Response
-from django.contrib.auth.models import Permission
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_permissions_view(request):
@@ -143,7 +120,6 @@ def user_permissions_view(request):
         # ⛔ Skip permissions not belonging to "tasks" app
         if app_label != "tasks":
             continue
-
         try:
             perm_obj = Permission.objects.get(codename=codename, content_type__app_label="tasks")
             permission_objects.append({
@@ -158,6 +134,24 @@ def user_permissions_view(request):
         "username": user.username,
         "permissions": permission_objects
     })
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def list_groups(request):
+    groups = Group.objects.all()
+    data = [{"id": g.id, "name": g.name} for g in groups]
+    return Response(data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    return Response({
+        'id': request.user.id,
+        'username': request.user.username,
+        'is_superuser': request.user.is_superuser
+    })
+
+
 class CustomerViewSet(viewsets.ModelViewSet):
 
     queryset=Customer.filtered.all()

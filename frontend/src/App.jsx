@@ -35,7 +35,7 @@ function App() {
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/allusers" element={token ? <CreateUser /> : <Navigate to="/login" />} />
+          <Route path="/users" element={token ? <CreateUser /> : <Navigate to="/login" />} />
           <Route path="/tasks" element={token ?<Task />: <Navigate to="/login" />}/>
           <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/login" /> } />
           <Route path="/customer-details/:id" element={ token ? <CustomerDetails /> : <Navigate to="/login" /> } />

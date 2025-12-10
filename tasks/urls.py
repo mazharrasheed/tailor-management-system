@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import TaskViewSet,UserSignupView,UserListView,UserProfileView,UserViewSet,current_user,user_permissions_view,CustomerViewSet
 from .views import (
     ShalwarQameezViewSet, ShirtViewSet, TrouserViewSet,
-    VaseCoatViewSet, SheerVaniViewSet, CoatViewSet
+    VaseCoatViewSet, SheerVaniViewSet, CoatViewSet,list_groups
 )
 router = DefaultRouter()
 
@@ -25,4 +25,5 @@ urlpatterns = [
     path('profile/',UserProfileView.as_view(),name='profile' ),
     path('signup/',UserSignupView.as_view(),name='singup' ),
     path('users/me/permissions/',user_permissions_view),
+    path("groups/", list_groups),
 ]
