@@ -14,7 +14,7 @@ import CustomerDetailsModal from "./CustomerDetailsModal";
 import CustomerFormModal from "./CustomerFormModal";
 
 const CustomerManager = () => {
-    const apiBase = "https://anmoltailor.pythonanywhere.com/api";
+    const apiBase = "http://127.0.0.1:8000/api";
     const { token } = useContext(AuthContext);
     const [customers, setCustomers] = useState([]);
     const [fetch_customer, setCustomer] = useState("");
@@ -154,7 +154,7 @@ const CustomerManager = () => {
     const columns = [
         { header: "ID", accessor: "id", sortable: true, center: true },
         { header: "Name", accessor: "name", sortable: true },
-        { header: "Phone", accessor: "Phome_number", sortable: true },
+        { header: "Phone", accessor: "phone_number", sortable: true },
         { header: "Address", accessor: "Adress", sortable: true },
         { header: "Description", accessor: "description", sortable: true },
 

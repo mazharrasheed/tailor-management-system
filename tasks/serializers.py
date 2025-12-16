@@ -171,7 +171,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            'Phome_number',
+            'phone_number',
             'Adress',
             'description',
             'created_at'
