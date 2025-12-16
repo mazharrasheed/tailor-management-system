@@ -115,17 +115,17 @@ export default function CustomerMeasurements() {
     }, [CustId]);
 
     useEffect(() => {
-          const fetchCustomer = async (id) => {
-        try {
-            const res = await axios.get(`${apiBase}/customers/${id}/`, {
-                headers: { Authorization: `Token ${token}` },
-            });
-            console.log(res.data)
-            setCustomer(res.data) ;
-        } catch (err) {
-            console.error("Failed to fetch customers:", err);
-        }
-    };
+        const fetchCustomer = async (id) => {
+            try {
+                const res = await axios.get(`${apiBase}/customers/${id}/`, {
+                    headers: { Authorization: `Token ${token}` },
+                });
+                console.log(res.data)
+                setCustomer(res.data);
+            } catch (err) {
+                console.error("Failed to fetch customers:", err);
+            }
+        };
         fetchCustomer(CustId);
     }, [CustId]);
 
@@ -291,7 +291,7 @@ export default function CustomerMeasurements() {
         // Create printable content
         const printable = `
     <h2>Customer Name: ${customer.name}</h2>
-    <h2>Phone Number: ${customer.Phome_number}</h2>
+    <h2>Phone Number: ${customer.phone_number}</h2>
     <h2>${meta.label} </h2>
     <ul>
       ${meta.fields.map(f => {
@@ -319,7 +319,7 @@ export default function CustomerMeasurements() {
         <div className="container mt-3">
             {customer ? <h3 className="m-3">Customer Name: {customer.name}</h3> : <p>Loading…</p>}
             <h3 className="m-3">Measurements</h3>
-          
+
             {Object.keys(TYPES).map((key) => {
                 const meta = TYPES[key];
                 const entry = measurements[key] || { exists: false, record: null };
@@ -342,9 +342,9 @@ export default function CustomerMeasurements() {
                                         </div>
                                     </div>
                                 ) : (
-                                  
+
                                     <p className="text-muted">No measurement yet.</p>
-                                   
+
                                 )}
                             </div>
                             <div className="d-flex flex-column gap-2">
@@ -356,7 +356,11 @@ export default function CustomerMeasurements() {
                                 </button>
 
                                 {exists && (
-                                    <button className="btn btn-outline-secondary" onClick={() => handlePrint(key)}>
+                                    <button
+                                        className="btn btn-outline-secondary"
+                                        disabled={!customer}
+                                        onClick={() => handlePrint(key)}
+                                    >
                                         Print
                                     </button>
                                 )}
