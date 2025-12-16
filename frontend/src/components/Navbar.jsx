@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import image from '../assets/anmol_tailor.png';
 
 export default function Navbar() {
   const { token } = useContext(AuthContext);
@@ -12,8 +13,11 @@ export default function Navbar() {
     <div className="container">
       <nav className="navbar navbar-expand-lg navbar-light bg-light nav-bg">
         <div className="container-fluid">
-          <NavLink className="navbar-brand" to="#">
-            Tailor Management System
+          <div className='p-1 bg-dark d-flex align-items-center  rounded-circle' style={{ width: 40, height: 40 }}>
+            <img className=' rounded-circle' width={35} src={image} alt="logo image" />
+          </div>
+          <NavLink className="ps-2 navbar-brand" to="#">
+            Anmol Tailors
           </NavLink>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>

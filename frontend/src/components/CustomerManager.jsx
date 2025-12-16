@@ -14,7 +14,7 @@ import CustomerDetailsModal from "./CustomerDetailsModal";
 import CustomerFormModal from "./CustomerFormModal";
 
 const CustomerManager = () => {
-    const apiBase = "http://127.0.0.1:8000/api";
+    const apiBase = "https://anmoltailor.pythonanywhere.com/api";
     const { token } = useContext(AuthContext);
     const [customers, setCustomers] = useState([]);
     const [fetch_customer, setCustomer] = useState("");
