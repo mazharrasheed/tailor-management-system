@@ -290,7 +290,9 @@ export default function CustomerMeasurements() {
 
         // Create printable content
         const printable = `
-    <h2>${meta.label} (Customer ${CustId})</h2>
+    <h2>Customer Name: ${customer.name}</h2>
+    <h2>Phone Number: ${customer.Phome_number}</h2>
+    <h2>${meta.label} </h2>
     <ul>
       ${meta.fields.map(f => {
             const val = entry.record?.[f];
