@@ -163,3 +163,15 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "anmoltailor.pythonanywhere.com",
 ]
+
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "Lax"
+
+# Required for local + prod
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://anmoltailor.pythonanywhere.com",
+]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
