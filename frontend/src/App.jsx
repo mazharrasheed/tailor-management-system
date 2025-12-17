@@ -11,6 +11,7 @@ import CustomerManager from './components/CustomerManager';
 import CreateUser from './components/CreateUser';
 import ShalwarQameez from './components/ShalwarQameez';
 import CustomerDetails from './components/CustomerDetails';
+import ForgotPassword from './components/ForgotPassword';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import './App.css'
@@ -39,6 +40,7 @@ function App() {
           <Route path="/customer-details/:id" element={ token ? <CustomerDetails /> : <Navigate to="/" /> } />
           <Route path="/profile" element={token ? <Profile /> :<Navigate to="/" />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
     
     </Router>

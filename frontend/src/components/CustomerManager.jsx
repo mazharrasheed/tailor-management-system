@@ -155,7 +155,7 @@ const CustomerManager = () => {
         { header: "ID", accessor: "id", sortable: true, center: true },
         { header: "Name", accessor: "name", sortable: true },
         { header: "Phone", accessor: "phone_number", sortable: true },
-        { header: "Address", accessor: "adress", sortable: true },
+        { header: "Address", accessor: "address", sortable: true },
         { header: "Description", accessor: "description", sortable: true },
 
         {

@@ -75,7 +75,7 @@ const SignIn = () => {
                 <br />
                 <button className="btn btn-primary" type="submit">Login</button>
             </form>
-    
+            <Link to="/forgot-password">Forgot Password?</Link>
             {token && <p style={{ color: 'green' }}>Logged in! Token saved.</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
