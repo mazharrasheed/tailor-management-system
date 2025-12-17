@@ -172,7 +172,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'phone_number',
-            'Adress',
+            'address',
             'description',
             'created_at'
         ]
