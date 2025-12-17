@@ -57,11 +57,11 @@ export default function Navbar() {
                       Sign In
                     </NavLink>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <NavLink className={getNavLinkClass} to="/signup">
                       Sign Up
                     </NavLink>
-                  </li>
+                  </li> */}
                 </>
               )}
 
