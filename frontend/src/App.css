@@ -51,3 +51,19 @@
     visibility: visible !important;
   }
 }
+
+
+.permissions-cell {
+    max-width: 300px;
+}
+
+/* Mobile behavior */
+@media (max-width: 768px) {
+    .permissions-cell {
+        max-height: 90px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: block;
+        white-space: normal;
+    }
+}

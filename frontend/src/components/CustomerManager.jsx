@@ -162,34 +162,30 @@ const CustomerManager = () => {
             header: "Actions",
             center: true,
             accessor: (row) => (
-                <>
-
-                    {Array.isArray(userPerms) && userPerms.includes("view_measurements") && (
-                        <div className="p-1">
-                        <NavLink className="btn btn-sm btn-outline-primary me-2" to={`/customer-details/${row.id}`}><FaEye style={{ cursor: "pointer" }} className="me-2" />Details</NavLink>
-                        </div>
-                    )}
-
-
-                    {Array.isArray(userPerms) && userPerms.includes("change_customer") && (
-                        <div className="p-1">
-                        <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(row)}>
-                            <FaEdit /> Edit
-                        </button>
-                        </div>
-                    )}
-
-                    {Array.isArray(userPerms) && userPerms.includes("delete_customer") && (
-                        <div className="p-1">
-                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.id)}>
-                            <FaTrash /> Delete
-                        </button>
-                        </div>
-                    )}
+                    <div className="d-flex justify-content-center">
+                        {Array.isArray(userPerms) && userPerms.includes("view_measurements") && (
+                            <div className="p-1">
+                                <NavLink className="btn btn-sm btn-outline-primary me-2" to={`/customer-details/${row.id}`}><FaEye style={{ cursor: "pointer" }} className="me-2" />Details</NavLink>
+                            </div>
+                        )}
 
 
+                        {Array.isArray(userPerms) && userPerms.includes("change_customer") && (
+                            <div className="p-1">
+                                <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(row)}>
+                                    <FaEdit /> Edit
+                                </button>
+                            </div>
+                        )}
 
-                </>
+                        {Array.isArray(userPerms) && userPerms.includes("delete_customer") && (
+                            <div className="p-1">
+                                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.id)}>
+                                    <FaTrash /> Delete
+                                </button>
+                            </div>
+                        )}
+                    </div>
             ),
             sortable: false,
         },
