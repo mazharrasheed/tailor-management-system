@@ -28,6 +28,7 @@ const Profile = () => {
                     { headers: { Authorization: `Token ${token}` } }
                 );
                 setUsers(response.data);
+                console.log('Profile data:', response.data);
             } catch (err) {
                 setError('Failed to fetch users');
             } finally {
@@ -137,7 +138,7 @@ const handleChangePassword = async () => {
                 users.map((user) => (
                     <div key={user.id} className="mb-3">
                         <h5>User Name: {user.username}</h5>
-                        <p>Email: {user.email}</p>
+                        <h5>Email: {user.email}</h5>
                     </div>
                 ))
             )}

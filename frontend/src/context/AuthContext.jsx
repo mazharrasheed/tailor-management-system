@@ -27,15 +27,28 @@ export const AuthProvider = ({ children }) => {
     fetchPermissions();
   }, [token]);
 
-  const fetchPermissions = async () => {
-    const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/users/me/permissions/', {
-      headers: { Authorization: `Token ${token}` },
-    });
-    setUserPerms(response.data.permissions);
-    console.log(response.data.permissions)
-    const perms=response.data.permissions
-    perms.some(p => p.codename === "add_task")
-  };
+  // const fetchPermissions = async () => {
+  //   const response = await axios.get('https://anmoltailor.pythonanywhere.com/api/users/me/permissions/', {
+  //     headers: { Authorization: `Token ${token}` },
+  //   });
+  //   setUserPerms(response.data.permissions);
+  //   console.log(response.data.permissions)
+  //   const perms=response.data.permissions
+  //   perms.some(p => p.codename === "add_task")
+  // };
+
+     useEffect(() => {
+        fetchPermissions();
+    }, []);
+
+    const fetchPermissions = async () => {
+        const response = await axios.get(`https://anmoltailor.pythonanywhere.com/api/users/me/permissions/`, {
+            headers: { Authorization: `Token ${token}` },
+        });
+        const perms = response.data.permissions.map(p => p.codename);
+        setUserPerms(perms);
+
+    };
 
 console.log("AuthContext userPerms:", userPerms);
 

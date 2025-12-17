@@ -22,8 +22,9 @@ import { AuthContext } from './context/AuthContext';
 
 function App() {
 
-  const { token } = useContext(AuthContext);
+  const { token,userPerms } = useContext(AuthContext);
   console.log('app.jsx',token)
+  console.log('userPerms',userPerms)
   return (
     <Router>
         {/* Navigation */}

@@ -133,7 +133,7 @@ class UserProfileView(APIView):
 
     def get(self, request):
         users = User.objects.filter(username=request.user.username) 
-        serializer = UserSignupSerializer(users, many=True)
+        serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
     
 class UserListView(APIView):
