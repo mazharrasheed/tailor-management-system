@@ -15,7 +15,9 @@ const ForgotPassword = () => {
       const response = await axios.post(
         'https://anmoltailor.pythonanywhere.com/api/forgot-password/',
         { email }
+
       );
+      console.log(email)
       setMessage(response.data.message || 'Password reset link sent to your email.');
     } catch (err) {
       setError('Failed to send reset email. Please try again.');

@@ -185,10 +185,10 @@ else:
 
 # For password reset links
 FRONTEND_URL = "https://anmoltailor.pythonanywhere.com"  # or your deployed React frontend URL
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.pythonanywhere.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'anmoltailor'
-EMAIL_HOST_PASSWORD = 'paktel2840'
+EMAIL_HOST_USER = "mazharopal@gmail.com"
+EMAIL_HOST_PASSWORD = "gaqc ltiy djji sfgt "  # NOT your normal Gmail password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

@@ -40,9 +40,17 @@ reset_tokens = {}  # simple in-memory store; use DB in production
 @csrf_exempt
 def forgot_password(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        email = data.get("email")
         try:
+            if request.content_type == "application/json":
+                data = json.loads(request.body.decode("utf-8"))
+            else:
+                data = request.POST
+            email = data.get("email")
+
+            if not email:
+                return JsonResponse({"error": "Email is required."}, status=400)
+            
+            print('reset_tokens')
             user = User.objects.get(email=email)
             token = get_random_string(32)
             reset_tokens[token] = user.username
@@ -56,9 +64,13 @@ def forgot_password(request):
                 fail_silently=False,
             )
             return JsonResponse({"message": "Password reset link sent to your email."})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format."}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Email not found."}, status=400)
-    return JsonResponse({"error": "Invalid request"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method."}, status=400)
 
 @csrf_exempt
 def reset_password(request, token):
@@ -66,14 +78,11 @@ def reset_password(request, token):
         data = json.loads(request.body)
         new_password = data.get("new_password")
         username = reset_tokens.get(token)
-
         if not username:
             return JsonResponse({"error": "Invalid or expired token"}, status=400)
-
         user = User.objects.get(username=username)
         user.set_password(new_password)
         user.save()
-
         del reset_tokens[token]  # remove used token
         return JsonResponse({"message": "Password reset successful"})
     return JsonResponse({"error": "Invalid request"}, status=400)

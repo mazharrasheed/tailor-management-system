@@ -12,6 +12,7 @@ import CreateUser from './components/CreateUser';
 import ShalwarQameez from './components/ShalwarQameez';
 import CustomerDetails from './components/CustomerDetails';
 import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import './App.css'
@@ -34,13 +35,15 @@ function App() {
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/users" element={token ? <CreateUser /> : <Navigate to="/" />} />
           <Route path="/tasks" element={token ?<Task />: <Navigate to="/" />}/>
           <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/" /> } />
           <Route path="/customer-details/:id" element={ token ? <CustomerDetails /> : <Navigate to="/" /> } />
           <Route path="/profile" element={token ? <Profile /> :<Navigate to="/" />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+      
         </Routes>
     
     </Router>
