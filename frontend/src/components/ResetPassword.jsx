@@ -28,7 +28,7 @@ const ResetPassword = () => {
       );
       setMessage(response.data.message || "Password reset successful!");
       // redirect to login after success
-      setTimeout(() => navigate('/signin'), 2000);
+      setTimeout(() => navigate('/'), 2000);
     } catch (err) {
       setError("Failed to reset password. Token may be invalid or expired.");
     }
