@@ -4,7 +4,7 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
 export default function UserManagement() {
-  const { token } = useContext(AuthContext);
+  const { token, userPerms } = useContext(AuthContext);
   const apiBase = "https://anmoltailor.pythonanywhere.com/api";
 
   const [users, setUsers] = useState([]);
@@ -224,9 +224,11 @@ export default function UserManagement() {
         </div>
 
         <div className="mt-3">
-          <button type="submit" className="btn btn-primary me-2">
-            {form.id ? "Update User" : "Create User"}
-          </button>
+          {Array.isArray(userPerms) && userPerms.includes("add_user") && (
+            <button type="submit" className="btn btn-primary me-2">
+              {form.id ? "Update User" : "Create User"}
+            </button>
+          )}
           {form.id && (
             <button type="button" className="btn btn-secondary" onClick={resetForm}>Cancel</button>
           )}
@@ -268,8 +270,13 @@ export default function UserManagement() {
                   }
                 </td>
                 <td>
-                  <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(u)}>Edit</button>
-                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(u.id)}>Delete</button>
+                  {Array.isArray(userPerms) && userPerms.includes("change_user") && (
+                    <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(u)}>Edit</button>
+                  )}
+                  {Array.isArray(userPerms) && userPerms.includes("delete_user") && (
+                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(u.id)}>Delete</button>
+                  )}
+
                 </td>
               </tr>
             ))}

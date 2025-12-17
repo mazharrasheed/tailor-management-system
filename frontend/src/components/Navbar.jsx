@@ -29,14 +29,14 @@ export default function Navbar() {
                 <>
                   <li className="nav-item">
                     
-                      {Array.isArray(userPerms) && userPerms.includes("add_user") && (
+                      {Array.isArray(userPerms) && userPerms.includes("view_user") && (
                       <NavLink className={getNavLinkClass} to="/users">
                       Users
                     </NavLink>
                     )}
                   </li>
                   <li className="nav-item">
-                    {Array.isArray(userPerms) && userPerms.includes("add_task") && (
+                    {Array.isArray(userPerms) && userPerms.includes("view_task") && (
                       <NavLink className={getNavLinkClass} to="/tasks">
                         Tasks
                       </NavLink>
@@ -44,7 +44,7 @@ export default function Navbar() {
 
                   </li>
                   <li className="nav-item">
-                    {Array.isArray(userPerms) && userPerms.includes("add_customer") && (
+                    {Array.isArray(userPerms) && userPerms.includes("view_customer") && (
                       <NavLink className={getNavLinkClass} to="/customers">
                         Customers
                       </NavLink>

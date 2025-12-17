@@ -163,11 +163,10 @@ const CustomerManager = () => {
             center: true,
             accessor: (row) => (
                 <>
-                
+
                     {Array.isArray(userPerms) && userPerms.includes("view_customer") && (
                         <NavLink className="btn btn-sm btn-outline-primary me-2" to={`/customer-details/${row.id}`}><FaEye style={{ cursor: "pointer" }} className="me-2" />Details</NavLink>
                     )}
-                   
 
                     {Array.isArray(userPerms) && userPerms.includes("change_customer") && (
                         <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(row)}>
@@ -175,15 +174,14 @@ const CustomerManager = () => {
                         </button>
                     )}
 
-
-                      {Array.isArray(userPerms) && userPerms.includes("delete_customer") && (
+                    {Array.isArray(userPerms) && userPerms.includes("delete_customer") && (
                         <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.id)}>
-                        <FaTrash /> Delete
-                    </button>
+                            <FaTrash /> Delete
+                        </button>
                     )}
 
 
-                    
+
                 </>
             ),
             sortable: false,
