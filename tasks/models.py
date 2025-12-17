@@ -13,6 +13,7 @@ class CustomPermissions(models.Model):
             ("view_inventory", "Can view inventory"),
             ("view_measurements", "Can view measurements"),
             ("add_measurements", "Can add measurements"),
+            ("change_measurements", "Can change measurements"),
             # Add more custom permissions here
         ]
 
