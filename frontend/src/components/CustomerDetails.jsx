@@ -88,7 +88,7 @@ const TYPES = {
 };
 
 export default function CustomerMeasurements() {
-    const { token } = useContext(AuthContext);
+    const { token,userPerms } = useContext(AuthContext);
     const { id } = useParams(); // customer id from route
     const CustId = parseInt(id, 10);
     const [customer, setCustomer] = useState(null);
@@ -348,12 +348,15 @@ export default function CustomerMeasurements() {
                                 )}
                             </div>
                             <div className="d-flex flex-column gap-2">
-                                <button
-                                    className={exists ? "btn btn-outline-primary" : "btn btn-success"}
-                                    onClick={() => openModal(key)}
-                                >
-                                    {exists ? "Edit" : "Create"}
-                                </button>
+
+                                {Array.isArray(userPerms) && userPerms.includes("add_measurements") && (
+                                    <button
+                                        className={exists ? "btn btn-outline-primary" : "btn btn-success"}
+                                        onClick={() => openModal(key)}
+                                    >
+                                        {exists ? "Edit" : "Create"}
+                                    </button>
+                                )}
 
                                 {exists && (
                                     <button
