@@ -185,15 +185,19 @@ const TaskManager = () => {
         <>
 
           {Array.isArray(userPerms) && userPerms.includes("change_task") && (
+            <div className="p-1">
             <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(row)}>
               <FaEdit /> Edit
             </button>
+            </div>
           )}
           
           {Array.isArray(userPerms) && userPerms.includes("delete_task") && (
+             <div className="p-1">
             <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.id)}>
               <FaTrash /> Delete
             </button>
+            </div>
           )}
 
 

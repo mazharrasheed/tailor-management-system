@@ -307,21 +307,25 @@ export default function UserManagement() {
 
                     <td>
                       {userPerms.includes("change_user") && (
+                        <div className="p-1">
                         <button
                           className="btn btn-warning btn-sm me-2"
                           onClick={() => handleEdit(u)}
                         >
                           Edit
                         </button>
+                        </div>
                       )}
 
                       {userPerms.includes("delete_user") && (
+                        <div className="p-1">
                         <button
                           className="btn btn-danger btn-sm"
                           onClick={() => handleDelete(u.id)}
                         >
                           Delete
                         </button>
+                        </div>
                       )}
                     </td>
                   </tr>
