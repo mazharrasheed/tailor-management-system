@@ -21,7 +21,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from django.views.decorators.csrf import csrf_exempt
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-token-auth/', csrf_exempt(obtain_auth_token)),
+    # path('api-token-auth/', csrf_exempt(obtain_auth_token)),
     path('api/', include('tasks.urls')),
     path('api-auth/', include('rest_framework.urls')),
 ]

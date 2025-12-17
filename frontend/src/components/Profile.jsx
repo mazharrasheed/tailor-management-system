@@ -39,16 +39,18 @@ const Profile = () => {
     // Change password handler
     // -----------------------------
 
-const getCSRFToken = async () => {
-    await axios.get(
-        'http://127.0.0.1:8000/api/auth/csrf/',
-        { withCredentials: true }
-    );
-};
+    console.log('Token in Profile component:', token);
 
 const handleChangePassword = async () => {
+    // Reset UI state
     setPasswordError('');
     setPasswordSuccess('');
+
+    // Basic client-side validation
+    if (!oldPassword || !newPassword1 || !newPassword2) {
+        setPasswordError('All fields are required');
+        return;
+    }
 
     if (newPassword1 !== newPassword2) {
         setPasswordError('New passwords do not match');
@@ -56,18 +58,10 @@ const handleChangePassword = async () => {
     }
 
     try {
-        // ✅ 1. Get CSRF cookie
-        await getCSRFToken();
-
-        // ✅ 2. Read CSRF token from cookie
-        const csrfToken = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
-
-        // ✅ 3. Make secure request
-        await axios.post(
-            'http://127.0.0.1:8000/api/auth/password/change/',
+        // Make token-authenticated request (NO CSRF)
+        console.log('Change pasword Profile component:', token);
+        const response = await axios.post(
+            'https://anmoltailor.pythonanywhere.com/api/change-password/',
             {
                 old_password: oldPassword,
                 new_password1: newPassword1,
@@ -76,23 +70,52 @@ const handleChangePassword = async () => {
             {
                 headers: {
                     Authorization: `Token ${token}`,
-                    'X-CSRFToken': csrfToken,
                 },
-                withCredentials: true,
             }
         );
 
-        setPasswordSuccess('Password changed successfully');
-        setTimeout(() => setShowModal(false), 1500);
+        // Explicit success handling
+        if (response.status === 200) {
+            setPasswordSuccess('Password changed successfully. Please log in again.');
+
+            // Clear sensitive state
+            setOldPassword('');
+            setNewPassword1('');
+            setNewPassword2('');
+
+            // Force logout after password change (security best practice)
+            setTimeout(() => {
+                localStorage.removeItem('access_token');
+                window.location.href = '/login';
+            }, 1500);
+        } else {
+            // Defensive fallback (should not normally happen)
+            setPasswordError('Unexpected response from server');
+        }
 
     } catch (err) {
-        setPasswordError(
-            err.response?.data?.old_password?.[0] ||
-            err.response?.data?.new_password2?.[0] ||
-            'Failed to change password'
-        );
+    const data = err.response?.data;
+
+    if (!data) {
+        setPasswordError('Failed to change password');
+        return;
     }
+
+    // Collect ALL validation errors from backend
+    let messages = [];
+
+    Object.values(data).forEach(value => {
+        if (Array.isArray(value)) {
+            messages = messages.concat(value);
+        } else if (typeof value === 'string') {
+            messages.push(value);
+        }
+    });
+
+    setPasswordError(messages.join(' '));
+}
 };
+
 
 
 
