@@ -75,7 +75,7 @@ const SignIn = () => {
                 <br />
                 <button className="btn btn-primary" type="submit">Login</button>
             </form>
-            <Link className='mt-3' to="/signup">Dont have accout ? SingUp</Link>
+            {/* <Link className='mt-3' to="/signup">Dont have accout ? SingUp</Link> */}
             {token && <p style={{ color: 'green' }}>Logged in! Token saved.</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
