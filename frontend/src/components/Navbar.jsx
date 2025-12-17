@@ -29,7 +29,7 @@ export default function Navbar() {
                 <>
                   <li className="nav-item">
                     <NavLink className={getNavLinkClass} to="/users">
-                      users
+                      Users
                     </NavLink>
                   </li>
                   <li className="nav-item">
