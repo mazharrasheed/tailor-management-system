@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 console.log("AuthContext userPerms:", userPerms);
 
   return (
-    <AuthContext.Provider value={{ token, login, logout,userPerms }}>
+    <AuthContext.Provider value={{ token, login, logout,userPerms,setToken }}>
       {children}
     </AuthContext.Provider>
   );

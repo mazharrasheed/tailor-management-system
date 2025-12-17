@@ -13,7 +13,6 @@ import ShalwarQameez from './components/ShalwarQameez';
 import CustomerDetails from './components/CustomerDetails';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import { AuthProvider } from './context/AuthContext';
 import './App.css'
 import { AuthContext } from './context/AuthContext';
 
@@ -22,27 +21,26 @@ import { AuthContext } from './context/AuthContext';
 function App() {
 
   const { token } = useContext(AuthContext);
+  console.log('app.jsx',token)
   return (
     <Router>
-      <AuthProvider>
         {/* Navigation */}
         <Navbar></Navbar>
         <div  className="container d-flex justify-content-center align-items-center mt-3" >
           <h1>Welcome to Anmol Tailors</h1>
         </div>
-
         {/* Routes */}
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/users" element={token ? <CreateUser /> : <Navigate to="/login" />} />
-          <Route path="/tasks" element={token ?<Task />: <Navigate to="/login" />}/>
-          <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/login" /> } />
-          <Route path="/customer-details/:id" element={ token ? <CustomerDetails /> : <Navigate to="/login" /> } />
-          <Route path="/profile" element={token ? <Profile /> :<Navigate to="/login" />} />
+          <Route path="/users" element={token ? <CreateUser /> : <Navigate to="/" />} />
+          <Route path="/tasks" element={token ?<Task />: <Navigate to="/" />}/>
+          <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/" /> } />
+          <Route path="/customer-details/:id" element={ token ? <CustomerDetails /> : <Navigate to="/" /> } />
+          <Route path="/profile" element={token ? <Profile /> :<Navigate to="/" />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>
-      </AuthProvider>
+    
     </Router>
   );
 }

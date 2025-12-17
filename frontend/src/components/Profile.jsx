@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
+import { AuthContext } from '../context/AuthContext';
 
 const Profile = () => {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
+    const { token , setToken} = useContext(AuthContext);
+    
 
     // Change password modal state
     const [showModal, setShowModal] = useState(false);
@@ -15,7 +18,7 @@ const Profile = () => {
     const [passwordError, setPasswordError] = useState('');
     const [passwordSuccess, setPasswordSuccess] = useState('');
 
-    const token = localStorage.getItem('access_token');
+    // const token = localStorage.getItem('access_token');
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -86,6 +89,7 @@ const handleChangePassword = async () => {
             // Force logout after password change (security best practice)
             setTimeout(() => {
                 localStorage.removeItem('access_token');
+                setToken(null);
                 window.location.href = '/';
             }, 1500);
         } else {

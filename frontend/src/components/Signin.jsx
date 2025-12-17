@@ -5,11 +5,11 @@ import { AuthContext } from '../context/AuthContext';
 
 const SignIn = () => {
 
-    const { login } = useContext(AuthContext);
+    const { login ,token, setToken } = useContext(AuthContext);
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [token, setToken] = useState('');
+    // const [token, setToken] = useState('');
     const [error, setError] = useState('');
     const handleLogin = async (e) => {
         e.preventDefault();
