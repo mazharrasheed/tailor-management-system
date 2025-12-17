@@ -86,7 +86,7 @@ const handleChangePassword = async () => {
             // Force logout after password change (security best practice)
             setTimeout(() => {
                 localStorage.removeItem('access_token');
-                window.location.href = '/login';
+                window.location.href = '/';
             }, 1500);
         } else {
             // Defensive fallback (should not normally happen)
