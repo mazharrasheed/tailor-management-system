@@ -27,7 +27,57 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from rest_framework import status
+
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+reset_tokens = {}  # simple in-memory store; use DB in production
+
+@csrf_exempt
+def forgot_password(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        email = data.get("email")
+        try:
+            user = User.objects.get(email=email)
+            token = get_random_string(32)
+            reset_tokens[token] = user.username
+
+            reset_link = f"{settings.FRONTEND_URL}/reset-password/{token}"
+            send_mail(
+                "Password Reset Request",
+                f"Click here to reset your password: {reset_link}",
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+                fail_silently=False,
+            )
+            return JsonResponse({"message": "Password reset link sent to your email."})
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Email not found."}, status=400)
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+@csrf_exempt
+def reset_password(request, token):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        new_password = data.get("new_password")
+        username = reset_tokens.get(token)
+
+        if not username:
+            return JsonResponse({"error": "Invalid or expired token"}, status=400)
+
+        user = User.objects.get(username=username)
+        user.set_password(new_password)
+        user.save()
+
+        del reset_tokens[token]  # remove used token
+        return JsonResponse({"message": "Password reset successful"})
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]

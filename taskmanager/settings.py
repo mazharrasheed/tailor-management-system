@@ -180,3 +180,15 @@ if DEBUG:
 else:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
+
+
+
+# For password reset links
+FRONTEND_URL = "https://anmoltailor.pythonanywhere.com"  # or your deployed React frontend URL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.pythonanywhere.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'anmoltailor'
+EMAIL_HOST_PASSWORD = 'paktel2840'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

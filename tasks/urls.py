@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import TaskViewSet,UserSignupView,UserListView,UserProfileView,UserViewSet,current_user,user_permissions_view,CustomerViewSet
 from .views import (
     ShalwarQameezViewSet, ShirtViewSet, TrouserViewSet,
-    VaseCoatViewSet, SheerVaniViewSet, CoatViewSet,list_groups,ChangePasswordView
+    VaseCoatViewSet, SheerVaniViewSet, CoatViewSet,list_groups,ChangePasswordView,forgot_password,reset_password
 )
 router = DefaultRouter()
 
@@ -22,6 +22,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('current_user/', current_user),
     path('change-password/', ChangePasswordView.as_view()),
+    path("forgot-password/", forgot_password, name="forgot-password"),
+    path("reset-password/<str:token>/", reset_password, name="reset-password"),
     path('allusers/',UserListView.as_view(),name='allusers' ),
     path('profile/',UserProfileView.as_view(),name='profile' ),
     path('signup/',UserSignupView.as_view(),name='singup' ),
