@@ -164,7 +164,7 @@ const CustomerManager = () => {
             accessor: (row) => (
                 <>
 
-                    {Array.isArray(userPerms) && userPerms.includes("view_customer") && (
+                    {Array.isArray(userPerms) && userPerms.includes("view_measurements") && (
                         <NavLink className="btn btn-sm btn-outline-primary me-2" to={`/customer-details/${row.id}`}><FaEye style={{ cursor: "pointer" }} className="me-2" />Details</NavLink>
                     )}
 
