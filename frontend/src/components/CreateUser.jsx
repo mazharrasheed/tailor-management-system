@@ -206,6 +206,7 @@ export default function UserManagement() {
             </div>
           </div>
 
+
           <div className="col-md-6">
             <label className="form-label">Groups</label>
             <select
@@ -237,52 +238,100 @@ export default function UserManagement() {
 
       <hr />
 
-      <h4>Users</h4>
-      {loading ? <p>Loading...</p> : (
-        <table className="table table-sm table-bordered">
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Groups</th>
-              <th>Permissions</th>
-              <th style={{ width: 140 }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length === 0 && (
-              <tr><td colSpan="5" className="text-center text-muted">No users</td></tr>
-            )}
-            {users.map(u => (
-              <tr key={u.id}>
-                <td>{u.username}{u.is_superuser && <span className="badge bg-success ms-2">super</span>}</td>
-                <td>{u.email || <span className="text-muted">-</span>}</td>
-                <td>
-                  {u.group_details && u.group_details.length > 0
-                    ? u.group_details.map(g => <span key={g.id} className="badge bg-secondary me-1">{g.name}</span>)
-                    : <span className="text-muted">No groups</span>
-                  }
-                </td>
-                <td style={{ maxWidth: 300 }}>
-                  {u.permission_details && u.permission_details.length > 0
-                    ? u.permission_details.map(p => <span key={p.codename} className="badge bg-info text-dark me-1">{p.codename}</span>)
-                    : <span className="text-muted">No permissions</span>
-                  }
-                </td>
-                <td>
-                  {Array.isArray(userPerms) && userPerms.includes("change_user") && (
-                    <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(u)}>Edit</button>
-                  )}
-                  {Array.isArray(userPerms) && userPerms.includes("delete_user") && (
-                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(u.id)}>Delete</button>
-                  )}
+      {Array.isArray(userPerms) && userPerms.includes("view_user") && (
+        <>
+          <h4>Users</h4>
 
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <table className="table table-sm table-bordered">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Groups</th>
+                  <th>Permissions</th>
+                  <th style={{ width: 140 }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.length === 0 && (
+                  <tr>
+                    <td colSpan="5" className="text-center text-muted">
+                      No users
+                    </td>
+                  </tr>
+                )}
+
+                {users.map(u => (
+                  <tr key={u.id}>
+                    <td>
+                      {u.username}
+                      {u.is_superuser && (
+                        <span className="badge bg-success ms-2">super</span>
+                      )}
+                    </td>
+
+                    <td>{u.email || <span className="text-muted">-</span>}</td>
+
+                    <td>
+                      {u.group_details?.length > 0 ? (
+                        u.group_details.map(g => (
+                          <span
+                            key={g.id}
+                            className="badge bg-secondary me-1"
+                          >
+                            {g.name}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-muted">No groups</span>
+                      )}
+                    </td>
+
+                    <td style={{ maxWidth: 300 }}>
+                      {u.permission_details?.length > 0 ? (
+                        u.permission_details.map(p => (
+                          <span
+                            key={p.codename}
+                            className="badge bg-info text-dark me-1"
+                          >
+                            {p.codename}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-muted">No permissions</span>
+                      )}
+                    </td>
+
+                    <td>
+                      {userPerms.includes("change_user") && (
+                        <button
+                          className="btn btn-warning btn-sm me-2"
+                          onClick={() => handleEdit(u)}
+                        >
+                          Edit
+                        </button>
+                      )}
+
+                      {userPerms.includes("delete_user") && (
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDelete(u.id)}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
+
     </div>
   );
 }
