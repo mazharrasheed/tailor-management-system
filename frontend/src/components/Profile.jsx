@@ -91,7 +91,7 @@ const handleChangePassword = async () => {
                 localStorage.removeItem('access_token');
                 setToken(null);
                 window.location.href = '/';
-            }, 1500);
+            }, 500);
         } else {
             // Defensive fallback (should not normally happen)
             setPasswordError('Unexpected response from server');

@@ -28,16 +28,16 @@ const CustomerFormModal = ({ show, onClose, onSubmit, formData, setFormData, edi
             <div className="col-md-6">
               <label>Phone</label>
               <input className="form-control"
-                value={formData.Phome_number}
-                onChange={(e) => setFormData({ ...formData, Phome_number: e.target.value })}
+                value={formData.phone_number}
+                onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
               />
             </div>
 
             <div className="col-md-6 mt-3">
               <label>Address</label>
               <input className="form-control"
-                value={formData.Adress}
-                onChange={(e) => setFormData({ ...formData, Adress: e.target.value })}
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               />
             </div>
 
