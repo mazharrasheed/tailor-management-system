@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Link ,Navigate} from 'react-router-dom';
-import {  useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
 import Users from './components/Users';
 import SignIn from './components/Signin';
 import Logout from './components/Logout';
@@ -19,34 +19,28 @@ import './App.css'
 import { AuthContext } from './context/AuthContext';
 
 
-
 function App() {
-
-  const { token,userPerms } = useContext(AuthContext);
-  console.log('app.jsx',token)
-  console.log('userPerms',userPerms)
+  const { token, userPerms } = useContext(AuthContext);
   return (
     <Router>
-        {/* Navigation */}
-        <Navbar></Navbar>
-        <div  className="container d-flex justify-content-center align-items-center mt-3" >
-          <h1>Welcome to Anmol Tailors</h1>
-        </div>
-        {/* Routes */}
-        <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/users" element={token ? <CreateUser /> : <Navigate to="/" />} />
-          <Route path="/tasks" element={token ?<Task />: <Navigate to="/" />}/>
-          <Route path="/customers" element={ token ? <CustomerManager /> : <Navigate to="/" /> } />
-          <Route path="/customer-details/:id" element={ token ? <CustomerDetails /> : <Navigate to="/" /> } />
-          <Route path="/profile" element={token ? <Profile /> :<Navigate to="/" />} />
-      
-        </Routes>
-    
+      {/* Navigation */}
+      <Navbar></Navbar>
+      <div className="container d-flex justify-content-center align-items-center mt-3" >
+        <h1>Welcome to Anmol Tailors</h1>
+      </div>
+      {/* Routes */}
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/users" element={token ? <CreateUser /> : <Navigate to="/" />} />
+        <Route path="/tasks" element={token ? <Task /> : <Navigate to="/" />} />
+        <Route path="/customers" element={token ? <CustomerManager /> : <Navigate to="/" />} />
+        <Route path="/customer-details/:id" element={token ? <CustomerDetails /> : <Navigate to="/" />} />
+        <Route path="/profile" element={token ? <Profile /> : <Navigate to="/" />} />
+      </Routes>
     </Router>
   );
 }

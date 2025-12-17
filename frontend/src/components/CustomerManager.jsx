@@ -15,7 +15,7 @@ import CustomerFormModal from "./CustomerFormModal";
 
 const CustomerManager = () => {
     const apiBase = "https://anmoltailor.pythonanywhere.com/api";
-    const { token } = useContext(AuthContext);
+    const { token, userPerms } = useContext(AuthContext);
     const [customers, setCustomers] = useState([]);
     const [fetch_customer, setCustomer] = useState("");
     const [editingId, setEditingId] = useState(null);
@@ -24,7 +24,7 @@ const CustomerManager = () => {
     const [customerToDelete, setCustomerToDelete] = useState(null);
     const [modalMessage, setModalMessage] = useState("");
     const [modalStatus, setModalStatus] = useState("");
-    const [userPerms, setUserPerms] = useState({});
+    // const [userPerms, setUserPerms] = useState({});
 
     // NEW → Details modal states
     const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -41,17 +41,17 @@ const CustomerManager = () => {
 
     useEffect(() => {
         fetchCustomers();
-        fetchPermissions();
+        // fetchPermissions();
     }, []);
 
-    const fetchPermissions = async () => {
-        const response = await axios.get(`${apiBase}/users/me/permissions/`, {
-            headers: { Authorization: `Token ${token}` },
-        });
-        const perms = response.data.permissions.map(p => p.codename);
-        setUserPerms(perms);
+    // const fetchPermissions = async () => {
+    //     const response = await axios.get(`${apiBase}/users/me/permissions/`, {
+    //         headers: { Authorization: `Token ${token}` },
+    //     });
+    //     const perms = response.data.permissions.map(p => p.codename);
+    //     setUserPerms(perms);
 
-    };
+    // };
 
     const fetchCustomers = async () => {
         try {
@@ -163,13 +163,27 @@ const CustomerManager = () => {
             center: true,
             accessor: (row) => (
                 <>
-                    <NavLink className="btn btn-sm btn-outline-primary me-2" to={`/customer-details/${row.id}`}><FaEye style={{ cursor: "pointer" }} className="me-2" />Details</NavLink>
-                    <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(row)}>
-                        <FaEdit /> Edit
-                    </button>
-                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.id)}>
+                
+                    {Array.isArray(userPerms) && userPerms.includes("view_customer") && (
+                        <NavLink className="btn btn-sm btn-outline-primary me-2" to={`/customer-details/${row.id}`}><FaEye style={{ cursor: "pointer" }} className="me-2" />Details</NavLink>
+                    )}
+                   
+
+                    {Array.isArray(userPerms) && userPerms.includes("change_customer") && (
+                        <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(row)}>
+                            <FaEdit /> Edit
+                        </button>
+                    )}
+
+
+                      {Array.isArray(userPerms) && userPerms.includes("delete_customer") && (
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.id)}>
                         <FaTrash /> Delete
                     </button>
+                    )}
+
+
+                    
                 </>
             ),
             sortable: false,

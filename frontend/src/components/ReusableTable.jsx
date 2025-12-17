@@ -160,8 +160,8 @@ const ReusableTable = ({ data, columns, rowsPerPageOptions = [5, 10, 20], extra 
               <tr>
                 <td colSpan={columns.length} className="text-center">
                   <p>Loading…</p>
-                  <div class="spinner-border text-primary" role="status">
-  <span class="visually-hidden">Loading...</span>
+                  <div className="spinner-border text-primary" role="status">
+  <span className="visually-hidden">Loading...</span>
 </div>
                   
                 </td>

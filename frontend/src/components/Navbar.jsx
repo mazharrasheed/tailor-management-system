@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import image from '../assets/anmol_tailor.png';
 
 export default function Navbar() {
-  const { token } = useContext(AuthContext);
+  const { token, userPerms } = useContext(AuthContext);
 
   const getNavLinkClass = ({ isActive }) =>
     isActive ? 'nav-link active' : 'nav-link';
@@ -28,19 +28,28 @@ export default function Navbar() {
               {token && (
                 <>
                   <li className="nav-item">
-                    <NavLink className={getNavLinkClass} to="/users">
+                    
+                      {Array.isArray(userPerms) && userPerms.includes("add_user") && (
+                      <NavLink className={getNavLinkClass} to="/users">
                       Users
                     </NavLink>
+                    )}
                   </li>
                   <li className="nav-item">
-                    <NavLink className={getNavLinkClass} to="/tasks">
-                      Tasks
-                    </NavLink>
+                    {Array.isArray(userPerms) && userPerms.includes("add_task") && (
+                      <NavLink className={getNavLinkClass} to="/tasks">
+                        Tasks
+                      </NavLink>
+                    )}
+
                   </li>
                   <li className="nav-item">
-                    <NavLink className={getNavLinkClass} to="/customers">
-                      Customers
-                    </NavLink>
+                    {Array.isArray(userPerms) && userPerms.includes("add_customer") && (
+                      <NavLink className={getNavLinkClass} to="/customers">
+                        Customers
+                      </NavLink>
+                    )}
+
                   </li>
                   <li className="nav-item">
                     <NavLink className={getNavLinkClass} to="/profile">

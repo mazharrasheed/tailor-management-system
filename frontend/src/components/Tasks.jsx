@@ -12,7 +12,7 @@ import Table from './Table';
 import ReusableTable from './ReusableTable';
 const TaskManager = () => {
   const apiBase = "https://anmoltailor.pythonanywhere.com/api"; // adjust as needed
-  const { token } = useContext(AuthContext);
+  const { token, userPerms } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -66,8 +66,6 @@ const TaskManager = () => {
     fetchPermissions();
   }, []);
 
-  const [userPerms, setUserPerms] = useState({});
-
   const fetchPermissions = async () => {
     const response = await axios.get(`${apiBase}/users/me/permissions/`, {
       headers: { Authorization: `Token ${token}` },
@@ -75,7 +73,6 @@ const TaskManager = () => {
 
     const perms = response.data.permissions.map(p => p.codename);
     console.log(perms);
-    setUserPerms(perms);
     console.log(response.data.permissions)
     console.log("TYPE:", typeof response.data.permissions);
     console.log("IS ARRAY:", Array.isArray(response.data.permissions));
@@ -186,12 +183,21 @@ const TaskManager = () => {
       center: true,
       accessor: (row) => (
         <>
-          <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(row)}>
-            <FaEdit /> Edit
-          </button>
-          <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.id)}>
-            <FaTrash /> Delete
-          </button>
+
+          {Array.isArray(userPerms) && userPerms.includes("change_task") && (
+            <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(row)}>
+              <FaEdit /> Edit
+            </button>
+          )}
+          
+          {Array.isArray(userPerms) && userPerms.includes("delete_task") && (
+            <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(row.id)}>
+              <FaTrash /> Delete
+            </button>
+          )}
+
+
+
         </>
       ),
       sortable: false
@@ -236,11 +242,6 @@ const TaskManager = () => {
           <FaPlus /> Create Task
         </button>
       )}
-      {/* {userPerms.some(p => p.codename === "add_task") && (
-        <button className="btn btn-success mb-3 mt-5" onClick={() => setShowForm(true)}>
-          <FaPlus /> Create Task
-        </button>
-      )} */}
       {showForm && (
 
         <div className="row">

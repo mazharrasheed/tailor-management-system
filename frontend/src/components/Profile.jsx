@@ -28,7 +28,6 @@ const Profile = () => {
                     { headers: { Authorization: `Token ${token}` } }
                 );
                 setUsers(response.data);
-                console.log('Profile data:', response.data);
             } catch (err) {
                 setError('Failed to fetch users');
             } finally {

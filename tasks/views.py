@@ -127,8 +127,6 @@ class ChangePasswordView(APIView):
         )
 
 
-
-
 class UserProfileView(APIView):
 
     def get(self, request):
@@ -210,35 +208,96 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def user_permissions_view(request):
+#     user = request.user
+#     user_perms = user.get_all_permissions()  # {"app_label.codename"}
+#     permission_objects = []
+#     for perm in user_perms:
+#         app_label, codename = perm.split(".")
+#         # ⛔ Skip permissions not belonging to "tasks" app
+#         if app_label != "tasks":
+#             continue
+#         try:
+#             perm_obj = Permission.objects.get(codename=codename, content_type__app_label="tasks")
+#             permission_objects.append({
+#                 "codename": perm_obj.codename,
+#                 "name": perm_obj.name,
+#                 "app_label": "tasks"
+#             })
+#         except Permission.DoesNotExist:
+#             pass
+#     return Response({
+#         "username": user.username,
+#         "permissions": permission_objects
+#     })
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import Permission
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_permissions_view(request):
     user = request.user
 
-    user_perms = user.get_all_permissions()  # {"app_label.codename"}
+    # -----------------------------
+    # ✅ SUPERUSER: return ALL permissions
+    # -----------------------------
+    if user.is_superuser:
+        perms = Permission.objects.select_related("content_type").all()
 
+        permission_objects = [
+            {
+                "codename": perm.codename,
+                "name": perm.name,
+                "app_label": perm.content_type.app_label,
+            }
+            for perm in perms
+        ]
+
+        return Response({
+            "username": user.username,
+            "is_superuser": True,
+            "permissions": permission_objects,
+        })
+
+    # -----------------------------
+    # ✅ NORMAL USER: only assigned permissions
+    # (filtered to tasks app)
+    # -----------------------------
+    user_perms = user.get_all_permissions()  # {"app_label.codename"}
     permission_objects = []
 
     for perm in user_perms:
         app_label, codename = perm.split(".")
 
-        # ⛔ Skip permissions not belonging to "tasks" app
+        # Only allow permissions from tasks app
         if app_label != "tasks":
             continue
+
         try:
-            perm_obj = Permission.objects.get(codename=codename, content_type__app_label="tasks")
+            perm_obj = Permission.objects.get(
+                codename=codename,
+                content_type__app_label=app_label
+            )
             permission_objects.append({
                 "codename": perm_obj.codename,
                 "name": perm_obj.name,
-                "app_label": "tasks"
+                "app_label": app_label,
             })
         except Permission.DoesNotExist:
             pass
 
     return Response({
         "username": user.username,
-        "permissions": permission_objects
+        "is_superuser": False,
+        "permissions": permission_objects,
     })
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -313,7 +372,6 @@ class TrouserViewSet(viewsets.ModelViewSet):
             qs = qs.filter(customer_id=customer_id)
         return qs
 
-
 class VaseCoatViewSet(viewsets.ModelViewSet):
     queryset = Vase_Coat.objects.all()
     serializer_class = VaseCoatSerializer
@@ -326,7 +384,6 @@ class VaseCoatViewSet(viewsets.ModelViewSet):
             qs = qs.filter(customer_id=customer_id)
         return qs
 
-
 class SheerVaniViewSet(viewsets.ModelViewSet):
     queryset = Sheer_Vani.objects.all()
     serializer_class = SheerVaniSerializer
@@ -338,7 +395,6 @@ class SheerVaniViewSet(viewsets.ModelViewSet):
         if customer_id:
             qs = qs.filter(customer_id=customer_id)
         return qs
-
 
 class CoatViewSet(viewsets.ModelViewSet):
     queryset = Coat.objects.all()
