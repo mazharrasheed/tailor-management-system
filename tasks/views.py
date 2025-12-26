@@ -321,6 +321,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     queryset=Customer.filtered.all()
     serializer_class=CustomerSerializer
     permission_classes=[permissions.IsAuthenticated,DjangoObjectPermissions]
+    
 
     def create(self, request, *args, **kwargs):
         print(self.request.user,self.request.data)

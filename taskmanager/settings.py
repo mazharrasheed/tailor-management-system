@@ -22,8 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-c$a%3ewk+f$nsx0jr@u%!+)2i5ztx89m-v-rgnv)t5o5v4-4&v'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 
 ALLOWED_HOSTS = ["authsandtasks.pythonanywhere.com",'127.0.0.1',]
 
@@ -138,14 +137,27 @@ TEMPLATES[0]["DIRS"] = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework.authentication.TokenAuthentication',
+#     ],
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ]
+# }
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',  # only for login endpoint
     ]
 }
+
+
+
+
 
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -167,6 +179,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "anmoltailor.pythonanywhere.com",
+    '127.0.2.2'
 ]
 
 CSRF_COOKIE_HTTPONLY = False
@@ -179,6 +192,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://anmoltailor.pythonanywhere.com",
     'http://localhost:8081',
 ]
+
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
 if DEBUG:
     CSRF_COOKIE_SECURE = False
